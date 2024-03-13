@@ -2,11 +2,26 @@ package model;
 
 public class ContaPoupanca extends Conta{
 
-    public void aplicarRendimento(){
-        if (this.Saldo > 0){
-            this.Saldo = this.Saldo * 1.0002;
-        }
+    public void depositar(double valor){
+        double taxaderendimento = 1.0005;
+        double rendimento = this.Saldo * taxaderendimento;
+        this.Saldo += valor;
+        this.Saldo += rendimento;
+    }
 
-        System.out.println("O valor do saldo atual é de R$ " + this.Saldo);
+    public void Sacar(double valor) throws Exception {
+        if (this.Saldo > valor){
+            double saqueComTaxa = valor * TAXADESAQUE;
+            this.Saldo -= saqueComTaxa;
+            System.out.println(
+                    "Saque efetuado com sucesso! Taxa de saque cobrada no valor de R$ "
+                            + (saqueComTaxa - valor));
+        } else {
+            throw new Exception("Valor de saque maior que o saldo.");
+        }
+    }
+
+    public void ConsultarSaldo(){
+        System.out.println("O saldo da conta é R$ " + this.Saldo);
     }
 }
