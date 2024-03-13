@@ -8,7 +8,7 @@ public class ContaCorrente extends Conta{
 
     public void Sacar(double valor) throws Exception {
         if (this.Saldo > valor){
-            double saqueComTaxa = valor * TAXADESAQUE;
+            double saqueComTaxa = ArredondamentoDouble.arredondar((valor * TAXADESAQUE));
             this.Saldo -= saqueComTaxa;
             System.out.println(
                     "Saque efetuado com sucesso! Taxa de saque cobrada no valor de R$ "

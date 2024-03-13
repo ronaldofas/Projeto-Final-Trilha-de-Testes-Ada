@@ -26,14 +26,23 @@ public class BancoController {
                 opcao = ENTRADA.nextInt();
             }
 
-            // Todo Criar função de criação de criação de conta.
+            // Todo Criar função de criação de conta.
             switch (opcao){
-                case 1: menu.ExibirTelaDeAberturaDeConta(); break; // Mostrar tela de abertura de conta;
+                case 1: this.AberturaDeContas(); break; // Mostrar tela de abertura de conta;
                 case 2: break; // Mostrar tela de transações;
                 case 3:
-                    System.out.println("Obrigado por utilizar a Caixa Econômica Federal.");
-                    System.exit(0);
+
+            }
+            if (opcao == 3){
+                System.out.println("Obrigado por utilizar a Caixa Econômica Federal.");
+                System.exit(0);
             }
         }
+    }
+
+    public void AberturaDeContas(){
+        int opcao;
+        menu.ExibirTelaDeAberturaDeConta();
+
     }
 }
