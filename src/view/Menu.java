@@ -15,6 +15,12 @@ public class Menu {
         this.ImprimirCorpoAberturaDeConta();
     }
 
+    public void ExibirTelaDeTransacoesDeConta(){
+        this.LimparTela();
+        this.ImprimirCabecalho();
+        this.ImprimirCorpoTransacoesDeConta();
+    }
+
     private void LimparTela() {
         if (System.getProperty("os.name").contains("Windows")) {
             try {
@@ -78,6 +84,23 @@ public class Menu {
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Abrir conta corrente");
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Voltar para o menu principal");
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(80, '='));
+        System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
+    }
+
+    private void ImprimirCorpoTransacoesDeConta(){
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Transações de Conta");
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Selecione uma opção: ");
+        System.out.println();
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Depositar");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Sacar");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Consultar saldo");
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Voltar para o menu principal");
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(80, '='));
         System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");

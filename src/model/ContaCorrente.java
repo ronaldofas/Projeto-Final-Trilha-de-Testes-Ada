@@ -2,6 +2,12 @@ package model;
 
 public class ContaCorrente extends Conta{
 
+    protected ContaCorrente(){}
+
+    public ContaCorrente(int numeroConta, String nomeCliente){
+        super(numeroConta, nomeCliente);
+    }
+
     public void depositar(double valor){
         this.Saldo += valor;
     }

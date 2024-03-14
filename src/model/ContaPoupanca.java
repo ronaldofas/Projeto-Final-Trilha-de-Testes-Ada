@@ -2,6 +2,12 @@ package model;
 
 public class ContaPoupanca extends Conta{
 
+    protected ContaPoupanca(){}
+
+    public ContaPoupanca(int numeroConta, String nomeCliente){
+        super(numeroConta, nomeCliente);
+    }
+
     public void depositar(double valor){
         double taxaderendimento = 1.0005;
         double rendimento = this.Saldo * taxaderendimento;
@@ -24,4 +30,5 @@ public class ContaPoupanca extends Conta{
     public void ConsultarSaldo(){
         System.out.println("O saldo da conta é R$ " + this.Saldo);
     }
+
 }

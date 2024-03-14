@@ -19,4 +19,12 @@ public abstract class Conta {
     public abstract void Sacar(double valor)throws Exception;
 
     public abstract void ConsultarSaldo();
+
+    public int getNumeroConta(){
+        return this.NumeroConta;
+    }
+
+    public String getNomeCliente(){
+        return this.NomeCliente;
+    }
 }

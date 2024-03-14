@@ -1,5 +1,4 @@
 import controller.BancoController;
-import view.Menu;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,6 +11,6 @@ public class Main {
         // Cria o Menu
         BancoController banco = new BancoController();
 
-        banco.Inicio();
+        banco.inicio();
     }
 }
