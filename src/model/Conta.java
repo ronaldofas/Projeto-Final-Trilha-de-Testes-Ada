@@ -16,9 +16,9 @@ public abstract class Conta {
 
     public abstract void depositar(double valor);
 
-    public abstract void Sacar(double valor)throws Exception;
+    public abstract void sacar(double valor)throws Exception;
 
-    public abstract void ConsultarSaldo();
+    public abstract void consultarSaldo();
 
     public int getNumeroConta(){
         return this.NumeroConta;

@@ -3,8 +3,6 @@ package controller;
 import model.ContaCorrente;
 import model.ContaPoupanca;
 import view.Menu;
-
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class BancoController {
@@ -32,7 +30,10 @@ public class BancoController {
                     this.aberturaDeContas();
                     yield true;
                 }
-                case 2 -> true;
+                case 2 -> {
+                    this.transacionarContas();
+                    yield true;
+                }
                 default -> false;
             };
 
@@ -74,6 +75,7 @@ public class BancoController {
             if (opcao == 3 || quebrar == 3){
                 if (quebrar == 3) {
                     System.out.println("Você parece indeciso, volte quando estiver preparado!");
+                    fecharMenu = true;
                 }
                 this.inicio();
             }
@@ -92,7 +94,158 @@ public class BancoController {
                 quebrar++;
             }
 
+            switch (opcao){
+                case 1 -> DepositarNaConta();
+                case 2 -> SacarNaConta();
+                case 3 -> ConsultarSaldoConta();
+            }
+
+            if (opcao == 4 || quebrar == 3){
+                if (quebrar == 3) {
+                    System.out.println("Você parece indeciso, volte quando estiver preparado!");
+                    fecharMenu = true;
+                }
+                this.inicio();
+            }
         }
+    }
+
+    private void ConsultarSaldoConta() {
+        int tipoConta;
+        int numeroConta;
+        tipoConta = obterTipoConta();
+        numeroConta = obterNumeroConta();
+        if (tipoConta == 1){
+            ContaPoupanca conta = EncontraContaPoupanca(numeroConta);
+            if (conta.getNumeroConta() == numeroConta){
+                conta.consultarSaldo();
+            } else {
+                System.out.println("Conta não localizada, reveja as informações.");
+            }
+        }
+
+        if (tipoConta == 2){
+            ContaCorrente conta = EncontraContaCorrente(numeroConta);
+            if (conta.getNumeroConta() == numeroConta){
+                conta.consultarSaldo();
+            } else System.out.println("Conta não localizada, reveja as informações.");
+        }
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void SacarNaConta() {
+        int tipoConta;
+        int numeroConta;
+        double valorDeposito;
+        tipoConta = obterTipoConta();
+        numeroConta = obterNumeroConta();
+        valorDeposito = obterValorTransacao("sacado");
+        if (tipoConta == 1){
+            ContaPoupanca conta = EncontraContaPoupanca(numeroConta);
+            if (conta.getNumeroConta() == numeroConta){
+                try {
+                    conta.sacar(valorDeposito);
+                } catch (Exception e){
+                    System.out.print("Não foi possível efetuar o saque. " + e.getLocalizedMessage());
+                }
+            } else {
+                System.out.println("Conta não localizada, reveja as informações.");
+            }
+        }
+
+        if (tipoConta == 2){
+            ContaCorrente conta = EncontraContaCorrente(numeroConta);
+            if (conta.getNumeroConta() == numeroConta){
+                try {
+                    conta.sacar(valorDeposito);
+                } catch (Exception e){
+                    System.out.print("Não foi possível efetuar o saque. " + e.getLocalizedMessage());
+                }
+            } else System.out.println("Conta não localizada, reveja as informações.");
+        }
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void DepositarNaConta() {
+        int tipoConta;
+        int numeroConta;
+        double valorDeposito;
+        tipoConta = obterTipoConta();
+        numeroConta = obterNumeroConta();
+        valorDeposito = obterValorTransacao("depositado");
+        if (tipoConta == 1){
+            ContaPoupanca conta = EncontraContaPoupanca(numeroConta);
+            if (conta.getNumeroConta() == numeroConta){
+                conta.depositar(valorDeposito);
+            } else {
+                System.out.println("Conta não localizada, reveja as informações.");
+            }
+        }
+
+        if (tipoConta == 2){
+            ContaCorrente conta = EncontraContaCorrente(numeroConta);
+            if (conta.getNumeroConta() == numeroConta){
+                conta.depositar(valorDeposito);
+            } else System.out.println("Conta não localizada, reveja as informações.");
+        }
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void aguardarRetorno() {
+        ENTRADA.nextLine();
+        System.out.print("Pressione enter para voltar ao menu: ");
+        ENTRADA.nextLine();
+    }
+
+    private void aguardarRetornoSemLimpezaAnterior() {
+        System.out.print("Pressione enter para voltar ao menu: ");
+        ENTRADA.nextLine();
+    }
+
+    private double obterValorTransacao(String transacao) {
+        double valor;
+        System.out.printf("Informe o valor a ser %s: ", transacao);
+        valor = ENTRADA.nextDouble();
+        return valor;
+    }
+
+    private int obterNumeroConta() {
+        int numeroConta;
+        System.out.print("Informe o número da conta: ");
+        numeroConta = ENTRADA.nextInt();
+        return numeroConta;
+    }
+
+    private int obterTipoConta() {
+        int tipoConta;
+        System.out.print("Informe o tipo de conta (1 poupança, 2 corrente): ");
+        tipoConta = ENTRADA.nextInt();
+        return tipoConta;
+    }
+
+    private ContaPoupanca EncontraContaPoupanca(int numeroConta) {
+        ContaPoupanca contaPoupanca = new ContaPoupanca(99, "Não localizado");
+        for (ContaPoupanca poupanca : this.contasPoupanca) {
+            if (poupanca != null &&
+                    poupanca.getNumeroConta() == numeroConta) {
+                contaPoupanca = poupanca;
+            }
+        }
+        return contaPoupanca;
+    }
+
+    private ContaCorrente EncontraContaCorrente(int numeroConta) {
+        ContaCorrente contaCorrente = new ContaCorrente(99, "Não localizado");
+        for (ContaCorrente corrente : this.contasCorrente) {
+            if (corrente != null &&
+                    corrente.getNumeroConta() == numeroConta) {
+                contaCorrente = corrente;
+            }
+        }
+        return contaCorrente;
     }
 
     private String ObterNomeDoCliente() {
@@ -105,20 +258,21 @@ public class BancoController {
 
     private void criarContaPoupanca(String nomeCliente) {
         int numeroConta = 0;
-        int quantidadeContas = 0;
+        int quantidadeContas;
         quantidadeContas = obterQuantidadeDeContasPoupanca();
         if (quantidadeContas <10){
             numeroConta = quantidadeContas + 1;
         } else {
             System.out.println("Problema técnicos para abertura de poupança, tente mais tarde.");
         }
-        if (numeroConta >= 1 && numeroConta <= 10){
+        if (numeroConta >= 1 && numeroConta <= this.contasPoupanca.length){
             ContaPoupanca conta = new ContaPoupanca(numeroConta, nomeCliente);
             this.contasPoupanca[numeroConta-1] = conta;
             System.out.printf(
-                    "Conta número %d de %S aberta com sucesso!", conta.getNumeroConta(),
+                    "Conta número %d de %S aberta com sucesso!\n", conta.getNumeroConta(),
                     conta.getNomeCliente());
         }
+        aguardarRetornoSemLimpezaAnterior();
     }
 
     private int obterQuantidadeDeContasPoupanca() {
@@ -146,19 +300,20 @@ public class BancoController {
     private void criarContaCorrente(String nomeCliente) {
         int numeroConta = 0;
 
-        int quantidadeContas = 0;
+        int quantidadeContas;
         quantidadeContas = obterQuantidadeDeContasCorrente();
         if (quantidadeContas <10){
             numeroConta = quantidadeContas + 1;
         } else {
             System.out.println("Problema técnicos para abertura de conta corrente, tente mais tarde.");
         }
-        if (numeroConta >= 1 && numeroConta <= 10){
+        if (numeroConta >= 1 && numeroConta < this.contasCorrente.length){
             ContaCorrente conta = new ContaCorrente(numeroConta, nomeCliente);
             this.contasCorrente[numeroConta-1] = conta;
             System.out.printf(
-                    "Conta número %d de %s aberta com sucesso!", conta.getNumeroConta(),
+                    "Conta número %d de %s aberta com sucesso!\n", conta.getNumeroConta(),
                     conta.getNomeCliente());
         }
+        aguardarRetornoSemLimpezaAnterior();
     }
 }
