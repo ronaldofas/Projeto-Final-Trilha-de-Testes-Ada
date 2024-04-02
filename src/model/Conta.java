@@ -1,30 +1,79 @@
 package model;
 
+
+import helpers.enums.TipoClienteEnum;
+import helpers.services.ArredondamentoDouble;
+
+import java.time.LocalDate;
+
 public abstract class Conta {
 
-    protected final double TAXADESAQUE = 1.002;
-    protected double Saldo;
-    protected int NumeroConta;
-    protected String NomeCliente;
+    protected int id;
+    protected double saldo;
+    protected LocalDate dataAtualizacao;
+    protected boolean status;
+    protected Cliente cliente;
 
-    protected Conta(){}
-
-    public Conta(int numeroConta, String nomeCliente){
-        this.NumeroConta = numeroConta;
-        this.NomeCliente = nomeCliente;
+    public Conta(int id, Cliente cliente, boolean ehPoupanca) {
+        if (ehPoupanca && cliente.getTipo() == TipoClienteEnum.PJ)
+            throw new RuntimeException("Somente pessoas físicas podem ter conta poupança!");
+        else {
+            this.id = id;
+            this.saldo = 0;
+            this.dataAtualizacao = LocalDate.now();
+            this.status = true;
+            this.cliente = cliente;
+        }
     }
 
-    public abstract void depositar(double valor);
-
-    public abstract void sacar(double valor)throws Exception;
-
-    public abstract void consultarSaldo();
-
-    public int getNumeroConta(){
-        return this.NumeroConta;
+    public int getId() {
+        return id;
     }
 
-    public String getNomeCliente(){
-        return this.NomeCliente;
+    public LocalDate getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void sacar(double valor)throws Exception {
+        if (this.saldo > valor){
+            this.saldo -= valor;
+            System.out.println("Saque efetuado com sucesso!");
+        } else {
+            throw new Exception("Valor de saque maior que o saldo.");
+        }
+    }
+
+    protected void cobrarTarifa(double valorDoSaque, double taxa){
+        double tarifa = ArredondamentoDouble.arredondar(valorDoSaque * taxa);
+        this.saldo -= tarifa;
+        System.out.printf("Descontada tarifa de saque no valor de R$ %.2f\n", tarifa);
+    }
+
+    public void depositar(double valor){
+        this.saldo += valor;
+        System.out.printf("Você depositou o valor de R$ %.2f\n", valor);
+    }
+
+    protected void adicionarRendimento(double valorDoSaque, double taxaDeRendimento) {
+        double rendimento = ArredondamentoDouble.arredondar((valorDoSaque * taxaDeRendimento));
+        this.saldo += rendimento;
+        System.out.printf("Você recebeu o rendimento de R$ %.2f\n", rendimento);
+    }
+
+    public double consultarSaldo(){
+        System.out.printf("O saldo atual é de R$ %.2f\n", this.saldo);
+        return this.saldo;
+    }
+
+    public void alterarStatus(){
+        this.status = !this.status;
     }
 }

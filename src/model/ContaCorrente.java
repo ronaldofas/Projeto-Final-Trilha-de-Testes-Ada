@@ -1,31 +1,22 @@
 package model;
 
+import helpers.enums.TipoClienteEnum;
+
 public class ContaCorrente extends Conta{
 
-    protected ContaCorrente(){}
+    protected final double TAXADESAQUEPF = 0.02;
+    protected final double TAXADESAQUEPJ = 0.05;
 
-    public ContaCorrente(int numeroConta, String nomeCliente){
-        super(numeroConta, nomeCliente);
-    }
-
-    public void depositar(double valor){
-        this.Saldo += valor;
-        System.out.printf("Você depositou o valor de R$ %.2f.\n", valor);
+    public ContaCorrente(int id, Cliente cliente) {
+        super(id, cliente, false);
     }
 
     public void sacar(double valor) throws Exception {
-        if (this.Saldo > valor){
-            double saqueComTaxa = ArredondamentoDouble.arredondar((valor * TAXADESAQUE));
-            this.Saldo -= saqueComTaxa;
-            System.out.printf(
-                    "Saque efetuado com sucesso! Taxa de saque cobrada no valor de R$ %.2f\n",
-                            (saqueComTaxa - valor));
-        } else {
-            throw new Exception("Valor de saque maior que o saldo.");
-        }
-    }
+        double taxa = 0.0;
+        if (cliente.getTipo() == TipoClienteEnum.PF) taxa = TAXADESAQUEPF;
+        if (cliente.getTipo() == TipoClienteEnum.PJ) taxa = TAXADESAQUEPJ;
 
-    public void consultarSaldo(){
-        System.out.printf("O saldo da conta é R$ %.2f\n", this.Saldo);
+        super.sacar(valor);
+        this.cobrarTarifa(valor, taxa);
     }
 }

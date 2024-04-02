@@ -64,10 +64,11 @@ public class Menu {
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Selecione uma opção: ");
         System.out.println();
         System.out.println();
-        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Abertura de conta");
-        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Transações de conta");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Cadastro de Clientes");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Abertura de conta");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Transações de conta");
         System.out.println();
-        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Sair da aplicação");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Sair da aplicação");
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(80, '='));
         System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
@@ -101,6 +102,25 @@ public class Menu {
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Consultar saldo");
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Voltar para o menu principal");
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(80, '='));
+        System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
+    }
+
+    public void ImprimirCorpoDeCadastroDeCliente(){
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Cadastro de Clientes");
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Selecione uma opção: ");
+        System.out.println();
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Cadastrar Cliente");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Pesquisar Cliente por nome");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') +
+                "3 - Pesquisar Cliente por identificador (CPF/CNPJ)");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Listar todas as contas");
+        System.out.println();
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "5 - Voltar para o menu principal");
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(80, '='));
         System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
