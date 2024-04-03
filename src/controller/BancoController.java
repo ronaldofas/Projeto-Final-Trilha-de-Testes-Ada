@@ -2,20 +2,17 @@ package controller;
 
 import helpers.enums.TipoClienteEnum;
 import helpers.enums.TipoDeContaEnum;
+import model.Banco;
 import model.Cliente;
 import model.ContaCorrente;
 import model.ContaPoupanca;
 import view.Menu;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class BancoController {
 
-    private final List<ContaCorrente> contasCorrente = new ArrayList<>();
-    private final List<ContaPoupanca> contasPoupanca = new ArrayList<>();
-    private final List<Cliente> clientes = new ArrayList<>();
+    private final Banco banco = new Banco();
     private final Menu menu = new Menu();
 
     private final Scanner ENTRADA = new Scanner(System.in);
@@ -28,14 +25,19 @@ public class BancoController {
         while(!fecharMenu){
             opcao = ENTRADA.nextInt();
             clearBuffer(ENTRADA);
-            if ((opcao > 4 || opcao < 1)){
-                System.out.print("Opção inválida! Escolha uma opção: ");
-                tentativas++;
-            }
+            tentativas = getTentativas(opcao, 4, tentativas);
             fecharMenu = validarOpcaoMenuInicio(opcao);
 
             terminarLoopOuSair(opcao, tentativas, 4, true);
         }
+    }
+
+    private static int getTentativas(int opcao, int x, int tentativas) {
+        if ((opcao > x || opcao < 1)) {
+            System.out.print("Opção inválida! Escolha uma opção: ");
+            tentativas++;
+        }
+        return tentativas;
     }
 
     private boolean validarOpcaoMenuInicio(int opcao) {
@@ -76,10 +78,7 @@ public class BancoController {
         while (!fecharMenu){
             opcao = ENTRADA.nextInt();
             clearBuffer(ENTRADA);
-            if ((opcao > 5 || opcao < 1) && tentativas < 3){
-                System.out.println("Opção inválida! Escolha uma opção: ");
-                tentativas++;
-            }
+            tentativas = getTentativas(opcao, 5, tentativas);
             fecharMenu = avaliarOpcaoMenuCadastroDeClientes(opcao);
         }
         inicio();
@@ -89,15 +88,17 @@ public class BancoController {
         return switch (opcao) {
             case 1 -> {
                 criarCliente();
-                yield true;
+                cadastroDeClientes();
+                yield false;
             }
             case 2 -> {
                 try {
                     pesquisarClientePorNome();
                 } catch (RuntimeException ex){
                     System.out.println(ex.getMessage());
-                    aguardarRetorno();
                 }
+                aguardarRetorno();
+                cadastroDeClientes();
                 yield false;
             }
             case 3 -> {
@@ -106,39 +107,23 @@ public class BancoController {
                 } catch (RuntimeException ex){
                     System.out.println(ex.getMessage());
                 }
+                aguardarRetorno();
+                cadastroDeClientes();
                 yield false;
             }
             case 4 -> {
-                imprimirClientes();
+                banco.imprimirClientes();
+                aguardarRetorno();
+                cadastroDeClientes();
                 yield false;
             }
-            case 5 -> true;
             default -> true;
         };
     }
 
-    private void imprimirClientes() {
-        if (!clientes.isEmpty()){
-            for (Cliente cliente : clientes){
-                System.out.println(cliente);
-            }
-        } else {
-            System.out.println("Não existem clientes cadastrados!");
-        }
-        aguardarRetorno();
-    }
-
     private Cliente pesquisarClientePorId() {
         String idAhPesquisar = obterIdCliente();
-        Cliente clienteLocalizado = null;
-        for (Cliente cliente: clientes) {
-            if (cliente.getId().contains(idAhPesquisar)){
-                clienteLocalizado = cliente;
-                System.out.println("Localizado: " + clienteLocalizado);
-                aguardarRetorno();
-                break;
-            }
-        }
+        Cliente clienteLocalizado = banco.pesquisarClientePorId(idAhPesquisar);
         if (clienteLocalizado == null)
             throw new RuntimeException("Nenhum cliente localizado com o nome informado!");
         return clienteLocalizado;
@@ -146,15 +131,7 @@ public class BancoController {
 
     private Cliente pesquisarClientePorNome() {
         String nomeAhPesquisar = obterNomeDoCliente();
-        Cliente clienteLocalizado = null;
-        for (Cliente cliente: clientes) {
-            if (cliente.getNome().contains(nomeAhPesquisar)){
-                clienteLocalizado = cliente;
-                System.out.println("Localizado: " + clienteLocalizado);
-                aguardarRetorno();
-                break;
-            }
-        }
+        Cliente clienteLocalizado = banco.pesquisarClientePorNome(nomeAhPesquisar);
         if (clienteLocalizado == null)
             throw new RuntimeException("Nenhum cliente localizado com o nome informado!");
         return clienteLocalizado;
@@ -165,13 +142,12 @@ public class BancoController {
         String id = obterIdCliente();
         String nomeCliente = obterNomeDoCliente();
         Cliente cliente = new Cliente(id, classificacao, nomeCliente);
-        this.clientes.add(cliente);
+        banco.adicionarClienteNovo(cliente);
         System.out.println(cliente);
         aguardarRetorno();
     }
 
     private TipoClienteEnum obterTipoDeCliente() {
-        TipoClienteEnum classificacao;
         boolean escolhaEfetuada = false;
         int opcao = 0;
 
@@ -182,13 +158,11 @@ public class BancoController {
             if (opcao > 0 && opcao <= 2) escolhaEfetuada = true;
         }
         
-        classificacao = switch (opcao){
+        return switch (opcao){
             case 1 -> TipoClienteEnum.PF;
             case 2 -> TipoClienteEnum.PJ;
             default -> throw new IllegalStateException("Unexpected value: " + opcao);
         };
-
-        return  classificacao;
     }
 
     private TipoDeContaEnum obterTipoDeConta() {
@@ -217,10 +191,7 @@ public class BancoController {
         while (!fecharMenu){
             opcao = ENTRADA.nextInt();
             clearBuffer(ENTRADA);
-            if ((opcao > 3 || opcao < 1)){
-                System.out.print("Opção inválida! Escolha uma opção: ");
-                tentativas++;
-            }
+            tentativas = getTentativas(opcao, 3, tentativas);
 
             fecharMenu = validarOpcaoMenuAberturaDeContas(opcao);
 
@@ -233,19 +204,20 @@ public class BancoController {
         return switch (opcao) {
             case 1 -> {
                 abrirContaPoupanca();
+                aberturaDeContas();
                 yield false;
             }
             case 2 -> {
                 abrirContaCorrente();
+                aberturaDeContas();
                 yield false;
             }
-            case 3 -> true;
             default -> true;
         };
     }
 
     private void abrirContaCorrente() {
-        Cliente cliente = null;
+        Cliente cliente;
         try {
             cliente = pesquisarClientePorId();
         } catch (RuntimeException ex){
@@ -256,7 +228,7 @@ public class BancoController {
     }
 
     private void abrirContaPoupanca() {
-        Cliente cliente = null;
+        Cliente cliente;
         try {
             cliente = pesquisarClientePorId();
         } catch (RuntimeException ex){
@@ -282,10 +254,7 @@ public class BancoController {
         while (!fecharMenu){
             opcao = ENTRADA.nextInt();
             clearBuffer(ENTRADA);
-            if ((opcao > 4 || opcao < 1)){
-                System.out.print("Opção inválida! Escolha uma opção: ");
-                quebrar++;
-            }
+            quebrar = getTentativas(opcao, 4, quebrar);
 
             fecharMenu = validarOpcaoMenuTransacionarContas(opcao);
 
@@ -298,14 +267,14 @@ public class BancoController {
         return switch (opcao) {
             case 1 -> {
                 try{
-                DepositarNaConta();
+                    DepositarNaConta();
                 } catch (RuntimeException ex){
                     System.out.println(ex.getMessage());
                 }
                 yield false;
             }
             case 2 -> {
-                SacarNaConta();
+                SacarDaConta();
                 yield false;
             }
             case 3 -> {
@@ -320,13 +289,13 @@ public class BancoController {
         TipoDeContaEnum tipoConta = obterTipoDeConta();
         int numeroConta = obterNumeroConta();
         if (tipoConta == TipoDeContaEnum.ContaPoupanca){
-            ContaPoupanca conta = encontrarContaPoupanca(numeroConta);
+            ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null) conta.consultarSaldo();
             else throw new RuntimeException("Conta não localizada!");
         }
 
         if (tipoConta == TipoDeContaEnum.ContaCorrente){
-            ContaCorrente conta = encontrarContaCorrente(numeroConta);
+            ContaCorrente conta = banco.encontrarContaCorrentePorId(numeroConta);
             if (conta != null) conta.consultarSaldo();
             else throw new RuntimeException("Conta não localizada!");
         }
@@ -334,12 +303,12 @@ public class BancoController {
         transacionarContas();
     }
 
-    private void SacarNaConta() {
+    private void SacarDaConta() {
         TipoDeContaEnum tipoConta = obterTipoDeConta();
         int numeroConta = obterNumeroConta();
         double valorDeposito = obterValorTransacao("sacado");
         if (tipoConta == TipoDeContaEnum.ContaPoupanca){
-            ContaPoupanca conta = encontrarContaPoupanca(numeroConta);
+            ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null){
                 try {
                     conta.sacar(valorDeposito);
@@ -350,7 +319,7 @@ public class BancoController {
         }
 
         if (tipoConta == TipoDeContaEnum.ContaCorrente){
-            ContaCorrente conta = encontrarContaCorrente(numeroConta);
+            ContaCorrente conta = banco.encontrarContaCorrentePorId(numeroConta);
             if (conta != null){
                 try {
                     conta.sacar(valorDeposito);
@@ -368,13 +337,13 @@ public class BancoController {
         int numeroConta = obterNumeroConta();
         double valorDeposito = obterValorTransacao("depositado");
         if (tipo == TipoDeContaEnum.ContaPoupanca){
-            ContaPoupanca conta = encontrarContaPoupanca(numeroConta);
+            ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null) conta.depositar(valorDeposito);
             else throw new RuntimeException("Conta não localizada!");
         }
 
         if (tipo == TipoDeContaEnum.ContaCorrente){
-            ContaCorrente conta = encontrarContaCorrente(numeroConta);
+            ContaCorrente conta = banco.encontrarContaCorrentePorId(numeroConta);
             if (conta != null) conta.depositar(valorDeposito);
             else throw new RuntimeException("Conta não localizada!");
         }
@@ -383,11 +352,6 @@ public class BancoController {
     }
 
     private void aguardarRetorno() {
-        System.out.print("Pressione enter para voltar ao menu: ");
-        ENTRADA.nextLine();
-    }
-
-    private void aguardarRetornoSemLimpezaAnterior() {
         System.out.print("Pressione enter para voltar ao menu: ");
         ENTRADA.nextLine();
     }
@@ -408,26 +372,6 @@ public class BancoController {
         return numeroConta;
     }
 
-    private ContaPoupanca encontrarContaPoupanca(int numeroConta) {
-        ContaPoupanca contaPoupanca = null;
-        for (ContaPoupanca poupanca : this.contasPoupanca) {
-            if (poupanca != null && poupanca.getId() == numeroConta) {
-                contaPoupanca = poupanca;
-            }
-        }
-        return contaPoupanca;
-    }
-
-    private ContaCorrente encontrarContaCorrente(int numeroConta) {
-        ContaCorrente contaCorrente = null;
-        for (ContaCorrente corrente : this.contasCorrente) {
-            if (corrente.getId() == numeroConta) {
-                contaCorrente = corrente;
-            }
-        }
-        return contaCorrente;
-    }
-
     private String obterNomeDoCliente() {
         String nomeCliente;
         System.out.println("Digite o seu nome: ");
@@ -436,49 +380,28 @@ public class BancoController {
     }
 
     private void criarContaPoupanca(Cliente cliente) {
-        int id = this.obterNumeroDeContaPoupancaParaAbertura();
-        ContaPoupanca conta = null;
+        int id = banco.obterNumeroDeContaPoupancaParaAbertura();
+        ContaPoupanca conta;
         try {
             conta = new ContaPoupanca(id, cliente);
         } catch (RuntimeException ex){
             System.out.println("Conta não Aberta!!! " + ex.getMessage());
+            aguardarRetorno();
             return;
         }
-        this.contasPoupanca.add(conta);
+        banco.adicionarContaPoupancaNova(conta);
         System.out.printf("Conta número %d de %S aberta com sucesso!\n",
                 conta.getId(), conta.getCliente().getNome());
-        aguardarRetornoSemLimpezaAnterior();
+        aguardarRetorno();
     }
 
     private void criarContaCorrente(Cliente cliente) {
-        int numeroConta = obterNumeroDeContaCorrenteParaAbertura();
+        int numeroConta = banco.obterNumeroDeContaCorrenteParaAbertura();
         ContaCorrente conta = new ContaCorrente(numeroConta, cliente);
-        this.contasCorrente.add(conta);
+        banco.adicionarContaCorrenteNova(conta);
         System.out.printf("Conta número %d de %s aberta com sucesso!\n",
                 conta.getId(), conta.getCliente().getNome());
-        aguardarRetornoSemLimpezaAnterior();
-    }
-
-    private int obterNumeroDeContaPoupancaParaAbertura() {
-        int numeroNovo = 0;
-
-        for (ContaPoupanca conta : contasPoupanca){
-            if (conta.getId() > numeroNovo) numeroNovo = conta.getId();
-        }
-        numeroNovo ++;
-
-        return numeroNovo;
-    }
-
-    private int obterNumeroDeContaCorrenteParaAbertura() {
-        int numeroNovo = 0;
-
-        for (ContaCorrente conta : contasCorrente){
-            if (conta.getId() > numeroNovo) numeroNovo = conta.getId();
-        }
-        numeroNovo ++;
-
-        return numeroNovo;
+        aguardarRetorno();
     }
 
     private static void clearBuffer(Scanner scanner) {

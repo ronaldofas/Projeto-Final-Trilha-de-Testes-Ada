@@ -118,7 +118,7 @@ public class Menu {
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Pesquisar Cliente por nome");
         System.out.println(this.CadeiaDeCaracteres(30, ' ') +
                 "3 - Pesquisar Cliente por identificador (CPF/CNPJ)");
-        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Listar todas as contas");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Listar todos os clientes");
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "5 - Voltar para o menu principal");
         System.out.println();
