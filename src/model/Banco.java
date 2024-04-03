@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Banco {
-    private List<Cliente> clientes;
-    private List<ContaPoupanca> contasPoupanca;
-    private List<ContaCorrente> contasCorrentes;
+    private final List<Cliente> clientes;
+    private final List<ContaPoupanca> contasPoupanca;
+    private final List<ContaCorrente> contasCorrentes;
 
     public Banco() {
         clientes = new ArrayList<>();
