@@ -1,6 +1,6 @@
-package model;
+package com.ada.model.entity;
 
-import helpers.enums.TipoClienteEnum;
+import com.ada.helpers.enums.TipoClienteEnum;
 
 import java.time.LocalDate;
 
@@ -18,6 +18,8 @@ public class Cliente {
         this.dataCadastro = LocalDate.now();
         this.status = true;
     }
+
+
 
     public String getId() {
         return id;
@@ -49,6 +51,18 @@ public class Cliente {
 
     public boolean isStatus() {
         return status;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setDataCadastro(LocalDate dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public void alterarStatus(){

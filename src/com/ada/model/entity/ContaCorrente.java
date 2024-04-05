@@ -1,6 +1,6 @@
-package model;
+package com.ada.model.entity;
 
-import helpers.enums.TipoClienteEnum;
+import com.ada.helpers.enums.TipoClienteEnum;
 
 public class ContaCorrente extends Conta{
 
@@ -8,13 +8,13 @@ public class ContaCorrente extends Conta{
     protected final double TAXADESAQUEPJ = 0.05;
 
     public ContaCorrente(int id, Cliente cliente) {
-        super(id, cliente, false);
+        super(id, cliente);
     }
 
     public void sacar(double valor) throws Exception {
         double taxa = 0.0;
-        if (cliente.getTipo() == TipoClienteEnum.PF) taxa = TAXADESAQUEPF;
-        if (cliente.getTipo() == TipoClienteEnum.PJ) taxa = TAXADESAQUEPJ;
+        if (cliente.getTipo() == TipoClienteEnum.PESSOA_FISICA) taxa = TAXADESAQUEPF;
+        if (cliente.getTipo() == TipoClienteEnum.PESSOA_JURIDICA) taxa = TAXADESAQUEPJ;
 
         super.sacar(valor);
         this.cobrarTarifa(valor, taxa);

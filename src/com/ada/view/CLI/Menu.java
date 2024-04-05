@@ -1,4 +1,4 @@
-package view;
+package com.ada.view.CLI;
 
 import java.io.IOException;
 
@@ -50,11 +50,7 @@ public class Menu {
     }
 
     private String CadeiaDeCaracteres(int qtde, char caracter){
-        String resultado = "";
-        for (int i = 1; i<=qtde; i++){
-            resultado += caracter;
-        }
-        return resultado;
+        return String.valueOf(caracter).repeat(Math.max(0, qtde));
     }
 
     private void ImprimirCorpoDoMenu(){

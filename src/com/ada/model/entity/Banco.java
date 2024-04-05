@@ -1,4 +1,4 @@
-package model;
+package com.ada.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,10 @@ public class Banco {
         clientes = new ArrayList<>();
         contasPoupanca = new ArrayList<>();
         contasCorrentes = new ArrayList<>();
+    }
+
+    public List<Cliente> getClientes() {
+        return clientes;
     }
 
     public Cliente pesquisarClientePorId(String idAhPesquisar) {

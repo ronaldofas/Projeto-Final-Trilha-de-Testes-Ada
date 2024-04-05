@@ -1,9 +1,7 @@
-package model;
+package com.ada.model.entity;
 
 
-import helpers.enums.TipoClienteEnum;
-import helpers.services.ArredondamentoDouble;
-
+import com.ada.helpers.services.ArredondamentoDouble;
 import java.time.LocalDate;
 
 public abstract class Conta {
@@ -14,16 +12,12 @@ public abstract class Conta {
     protected boolean status;
     protected Cliente cliente;
 
-    public Conta(int id, Cliente cliente, boolean ehPoupanca) {
-        if (ehPoupanca && cliente.getTipo() == TipoClienteEnum.PJ)
-            throw new RuntimeException("Somente pessoas físicas podem ter conta poupança!");
-        else {
-            this.id = id;
-            this.saldo = 0;
-            this.dataAtualizacao = LocalDate.now();
-            this.status = true;
-            this.cliente = cliente;
-        }
+    public Conta(int id, Cliente cliente) {
+        this.id = id;
+        this.saldo = 0;
+        this.dataAtualizacao = LocalDate.now();
+        this.status = true;
+        this.cliente = cliente;
     }
 
     public int getId() {

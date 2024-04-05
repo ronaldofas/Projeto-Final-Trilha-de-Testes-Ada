@@ -1,12 +1,12 @@
-package controller;
+package com.ada.controller;
 
-import helpers.enums.TipoClienteEnum;
-import helpers.enums.TipoDeContaEnum;
-import model.Banco;
-import model.Cliente;
-import model.ContaCorrente;
-import model.ContaPoupanca;
-import view.Menu;
+import com.ada.helpers.enums.TipoClienteEnum;
+import com.ada.helpers.enums.TipoDeContaEnum;
+import com.ada.model.entity.Banco;
+import com.ada.model.entity.Cliente;
+import com.ada.model.entity.ContaCorrente;
+import com.ada.model.entity.ContaPoupanca;
+import com.ada.view.CLI.Menu;
 
 import java.util.Scanner;
 
@@ -159,8 +159,8 @@ public class BancoController {
         }
         
         return switch (opcao){
-            case 1 -> TipoClienteEnum.PF;
-            case 2 -> TipoClienteEnum.PJ;
+            case 1 -> TipoClienteEnum.PESSOA_FISICA;
+            case 2 -> TipoClienteEnum.PESSOA_JURIDICA;
             default -> throw new IllegalStateException("Unexpected value: " + opcao);
         };
     }
@@ -177,8 +177,8 @@ public class BancoController {
         }
 
         return switch (opcao){
-            case 1 -> TipoDeContaEnum.ContaPoupanca;
-            case 2 -> TipoDeContaEnum.ContaCorrente;
+            case 1 -> TipoDeContaEnum.CONTA_POUPANCA;
+            case 2 -> TipoDeContaEnum.CONTA_CORRENTE;
             default -> throw new IllegalStateException("Unexpected value: " + opcao);
         };
     }
@@ -288,13 +288,13 @@ public class BancoController {
     private void ConsultarSaldoConta() {
         TipoDeContaEnum tipoConta = obterTipoDeConta();
         int numeroConta = obterNumeroConta();
-        if (tipoConta == TipoDeContaEnum.ContaPoupanca){
+        if (tipoConta == TipoDeContaEnum.CONTA_POUPANCA){
             ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null) conta.consultarSaldo();
             else throw new RuntimeException("Conta não localizada!");
         }
 
-        if (tipoConta == TipoDeContaEnum.ContaCorrente){
+        if (tipoConta == TipoDeContaEnum.CONTA_CORRENTE){
             ContaCorrente conta = banco.encontrarContaCorrentePorId(numeroConta);
             if (conta != null) conta.consultarSaldo();
             else throw new RuntimeException("Conta não localizada!");
@@ -307,7 +307,7 @@ public class BancoController {
         TipoDeContaEnum tipoConta = obterTipoDeConta();
         int numeroConta = obterNumeroConta();
         double valorDeposito = obterValorTransacao("sacado");
-        if (tipoConta == TipoDeContaEnum.ContaPoupanca){
+        if (tipoConta == TipoDeContaEnum.CONTA_POUPANCA){
             ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null){
                 try {
@@ -318,7 +318,7 @@ public class BancoController {
             } else throw new RuntimeException("Conta não localizada!");
         }
 
-        if (tipoConta == TipoDeContaEnum.ContaCorrente){
+        if (tipoConta == TipoDeContaEnum.CONTA_CORRENTE){
             ContaCorrente conta = banco.encontrarContaCorrentePorId(numeroConta);
             if (conta != null){
                 try {
@@ -336,13 +336,13 @@ public class BancoController {
         TipoDeContaEnum tipo = obterTipoDeConta();
         int numeroConta = obterNumeroConta();
         double valorDeposito = obterValorTransacao("depositado");
-        if (tipo == TipoDeContaEnum.ContaPoupanca){
+        if (tipo == TipoDeContaEnum.CONTA_POUPANCA){
             ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null) conta.depositar(valorDeposito);
             else throw new RuntimeException("Conta não localizada!");
         }
 
-        if (tipo == TipoDeContaEnum.ContaCorrente){
+        if (tipo == TipoDeContaEnum.CONTA_CORRENTE){
             ContaCorrente conta = banco.encontrarContaCorrentePorId(numeroConta);
             if (conta != null) conta.depositar(valorDeposito);
             else throw new RuntimeException("Conta não localizada!");

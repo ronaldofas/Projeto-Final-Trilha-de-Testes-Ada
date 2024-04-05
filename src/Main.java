@@ -1,4 +1,5 @@
-import controller.BancoController;
+import com.ada.controller.BancoController;
+import com.ada.view.GUI.TelaInicial;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,8 +10,13 @@ public class Main {
         // Crie as funcionalidades: sacar, depositar, consultar saldo.
 
         // Cria o Menu
+        boolean gui = true;
+
         BancoController banco = new BancoController();
 
-        banco.inicio();
+        if (gui)
+            new TelaInicial().setVisible(true);
+        else
+            banco.inicio();
     }
 }
