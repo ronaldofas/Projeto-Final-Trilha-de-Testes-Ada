@@ -14,8 +14,16 @@ public class Banco {
         contasCorrentes = new ArrayList<>();
     }
 
-    public List<Cliente> getClientes() {
-        return clientes;
+    public List<Cliente> ObterListaDeClientes() {
+        return new ArrayList<>(clientes);
+    }
+
+    public List<ContaCorrente> obterListaDeContasCorrentes() {
+        return new ArrayList<>(contasCorrentes);
+    }
+
+    public List<ContaPoupanca> obterListaDeContasPoupanca() {
+        return new ArrayList<>(contasPoupanca);
     }
 
     public Cliente pesquisarClientePorId(String idAhPesquisar) {

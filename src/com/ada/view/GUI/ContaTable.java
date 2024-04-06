@@ -1,37 +1,43 @@
 package com.ada.view.GUI;
 
 import com.ada.controller.BancoGUIController;
-import com.ada.helpers.enums.TipoClienteEnum;
-import com.ada.model.entity.Cliente;
+import com.ada.helpers.enums.TipoDeContaEnum;
+import com.ada.model.entity.Conta;
+import com.ada.model.entity.ContaCorrente;
+import com.ada.model.entity.ContaPoupanca;
 import com.ada.view.GUI.model.ClienteTableModel;
+import com.ada.view.GUI.model.ContaTableModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ClienteTable extends JFrame {
+public class ContaTable extends JFrame {
 
     private JPanel painelPrincipal;
-    private JTable tabelaClientes;
+    private JTable tabelaContas;
     private JScrollPane scrollPane;
     private JButton btnAdicionar;
-    private JTextField txtNome;
     private JTextField txtCpfCnpj;
-    private JComboBox<TipoClienteEnum> cbTipoCliente;
+    private JComboBox<TipoDeContaEnum> cbTipoConta;
 
-    private List<Cliente> clientes;
+    private List<Conta> contas;
+    private List<ContaPoupanca> contasPoupanca;
+    private List<ContaCorrente> contasCorrente;
     BancoGUIController banco;
-    private ClienteTableModel clienteTableModel;
+    private ContaTableModel contaTableModel;
 
-    public ClienteTable(BancoGUIController banco) {
+    public ContaTable(BancoGUIController banco) {
         // Configurações da Janela
-        setTitle("Clientes");
+        setTitle("Contas");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.banco = banco;
-        clientes = banco.obterClientes();
+        contas = new ArrayList<>();
+        contasPoupanca = new ArrayList<>();
+        contasCorrente = new ArrayList<>();
+        obterContas();
 
         criarPainelPrincipal();
 
@@ -51,6 +57,21 @@ public class ClienteTable extends JFrame {
         // Ajustar a Janela à Resolução da Tela
         pack();
         setLocationRelativeTo(null);
+    }
+
+    private void obterContas() {
+        contasPoupanca.clear();
+        contasCorrente.clear();
+        contas.clear();
+
+        contasCorrente = banco.obterContasCorrente();
+        contasPoupanca = banco.obterContasPoupanca();
+        for (Conta conta : contasCorrente){
+            contas.add(conta);
+        }
+        for (Conta conta : contasPoupanca){
+            contas.add(conta);
+        }
     }
 
     private void organizarComponentesNoGrid() {
@@ -79,7 +100,7 @@ public class ClienteTable extends JFrame {
         gbc.gridx = 0;
         painelPrincipal.add(new JLabel("Tipo:"), gbc);
         gbc.gridx = 1;
-        painelPrincipal.add(cbTipoCliente, gbc);
+        painelPrincipal.add(cbTipoConta, gbc);
     }
 
     private void organizaSegundaLinhaComCampos(GridBagConstraints gbc) {
@@ -91,12 +112,6 @@ public class ClienteTable extends JFrame {
         gbc.gridx = 1;
         painelPrincipal.add(txtCpfCnpj, gbc);
 
-        gbc.gridwidth = 1;
-        gbc.gridx = 2;
-        painelPrincipal.add(new JLabel("Nome:"), gbc);
-
-        gbc.gridx = 3;
-        painelPrincipal.add(txtNome, gbc);
     }
 
     private void organizaPrimeiraLinhaComTabela(GridBagConstraints gbc) {
@@ -108,9 +123,8 @@ public class ClienteTable extends JFrame {
 
     private void criarCampoDeEntrada() {
         // Criar os Campos de Entrada
-        txtNome = new JTextField(20);
         txtCpfCnpj = new JTextField(14);
-        cbTipoCliente = new JComboBox<>(TipoClienteEnum.values());
+        cbTipoConta = new JComboBox<>(TipoDeContaEnum.values());
     }
 
     private void criarBotaoAdicionar() {
@@ -119,10 +133,9 @@ public class ClienteTable extends JFrame {
         btnAdicionar.addActionListener(e -> {
             // Validar os dados
             String id = txtCpfCnpj.getText();
-            String nome = txtNome.getText();
-            TipoClienteEnum tipoCliente = (TipoClienteEnum) cbTipoCliente.getSelectedItem();
+            TipoDeContaEnum tipoConta = (TipoDeContaEnum) cbTipoConta.getSelectedItem();
 
-            if ((id.isBlank() || id.isEmpty()) || (nome.isEmpty() || nome.isBlank())){
+            if ((id.isBlank() || id.isEmpty()) ){
                 JOptionPane
                         .showMessageDialog(
                                 null,
@@ -130,28 +143,34 @@ public class ClienteTable extends JFrame {
                         );
             } else {
                 // Adicionar o novo Cliente à lista
-                banco.adicionarCliente(id, tipoCliente.getId(), nome);
-                txtCpfCnpj.setText("");
-                txtNome.setText("");
+                if(tipoConta != null) {
+                    try {
+                        banco.adicionarConta(id, tipoConta);
+                        txtCpfCnpj.setText("");
+                    } catch (RuntimeException ex){
+                        JOptionPane.showMessageDialog(
+                                null, "Erro ao abrir conta:\n" + ex.getMessage());
+                    }
+                } else throw new RuntimeException("Tipo de conta inválido ou não preenchido!");
 
                 // Atualizar a tabela
-                clientes = banco.obterClientes();
-                atualizarClientesDaTabela();
-                ((ClienteTableModel) tabelaClientes.getModel()).fireTableDataChanged();
+                obterContas();
+                atualizarContasDaTabela();
+                ((ContaTableModel) tabelaContas.getModel()).fireTableDataChanged();
             }
         });
     }
 
     private void criarScrollPane() {
         // Criar o Scroll Pane
-        scrollPane = new JScrollPane(tabelaClientes);
+        scrollPane = new JScrollPane(tabelaContas);
     }
 
     private void criarTabela() {
         // Criar a Tabela
-        clienteTableModel = new ClienteTableModel(clientes);
-        tabelaClientes = new JTable();
-        tabelaClientes.setModel(clienteTableModel);
+        contaTableModel = new ContaTableModel(contas);
+        tabelaContas = new JTable();
+        tabelaContas.setModel(contaTableModel);
     }
 
     private void criarPainelPrincipal() {
@@ -160,7 +179,7 @@ public class ClienteTable extends JFrame {
         painelPrincipal.setLayout(new GridBagLayout());
     }
 
-    private void atualizarClientesDaTabela(){
-        clienteTableModel.atualizarClientes(this.clientes);
+    private void atualizarContasDaTabela(){
+        contaTableModel.atualizarContas(contas);
     }
 }

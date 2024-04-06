@@ -1,5 +1,6 @@
 package com.ada.view.GUI;
 
+import com.ada.controller.BancoController;
 import com.ada.controller.BancoGUIController;
 
 import javax.swing.*;
@@ -11,11 +12,11 @@ public class TelaInicial extends JFrame {
 
     private JPanel painelPrincipal;
     private JMenuBar menuBar;
-    private JMenu menuOpcoes, menuClientes;
+    private JMenu menuOpcoes, menuClientes, menuContas;
     private JMenuItem itemOpcao1, itemOpcao2;
-    private JMenuItem itemClientes1;
-    private JMenuItem itemClientes2;
-    private BancoGUIController banco;
+    private JMenuItem itemClientes1, itemClientes2;
+    private JMenuItem itemTabelaContas;
+    BancoGUIController banco;
 
     public TelaInicial() {
         // Configurações da Janela
@@ -32,12 +33,13 @@ public class TelaInicial extends JFrame {
         menuBar = new JMenuBar();
 
         //criarMenuOpcoes();
-
         criarMenuClientes();
+        criarMenuContas();
 
         // Adicionar o Menu "Opções" ao Menu Bar
         //menuBar.add(menuOpcoes);
         menuBar.add(menuClientes);
+        menuBar.add(menuContas);
 
         // Adicionar o Menu Bar à Janela
         setJMenuBar(menuBar);
@@ -78,15 +80,24 @@ public class TelaInicial extends JFrame {
         itemClientes2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ClienteTable().setVisible(true);
+                new ClienteTable(banco).setVisible(true);
             }
         });
         //menuClientes.add(itemClientes1);
         menuClientes.add(itemClientes2);
     }
 
-    public static void main(String[] args) {
-        new TelaInicial().setVisible(true);
+    private void criarMenuContas(){
+        menuContas = new JMenu("Contas");
+        itemTabelaContas = new JMenuItem("Tabela de Contas");
+
+        itemTabelaContas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ContaTable(banco).setVisible(true);
+            }
+        });
+        menuContas.add(itemTabelaContas);
     }
 }
 

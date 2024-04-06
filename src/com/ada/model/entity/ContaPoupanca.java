@@ -9,6 +9,7 @@ public class ContaPoupanca extends Conta{
 
     public ContaPoupanca(int id, Cliente cliente) {
         super(id, cliente);
+        if (cliente == null) throw new RuntimeException("Cliente inválido ou não localizado!");
         if (cliente.getTipo() == TipoClienteEnum.PESSOA_JURIDICA)
             throw new RuntimeException("Somente pessoas físicas podem ter conta poupança!");
     }
