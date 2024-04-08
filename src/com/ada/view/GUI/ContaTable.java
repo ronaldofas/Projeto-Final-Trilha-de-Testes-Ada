@@ -25,7 +25,7 @@ public class ContaTable extends JFrame {
     private List<Conta> contas;
     private List<ContaPoupanca> contasPoupanca;
     private List<ContaCorrente> contasCorrente;
-    BancoGUIController banco;
+    private BancoGUIController banco;
     private ContaTableModel contaTableModel;
 
     public ContaTable(BancoGUIController banco) {
@@ -37,6 +37,7 @@ public class ContaTable extends JFrame {
         contas = new ArrayList<>();
         contasPoupanca = new ArrayList<>();
         contasCorrente = new ArrayList<>();
+
         obterContas();
 
         criarPainelPrincipal();
@@ -147,6 +148,7 @@ public class ContaTable extends JFrame {
                     try {
                         banco.adicionarConta(id, tipoConta);
                         txtCpfCnpj.setText("");
+                        txtCpfCnpj.requestFocus();
                     } catch (RuntimeException ex){
                         JOptionPane.showMessageDialog(
                                 null, "Erro ao abrir conta:\n" + ex.getMessage());

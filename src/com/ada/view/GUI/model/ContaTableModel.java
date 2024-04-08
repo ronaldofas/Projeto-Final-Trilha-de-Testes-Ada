@@ -1,6 +1,5 @@
 package com.ada.view.GUI.model;
 
-import com.ada.model.entity.Cliente;
 import com.ada.model.entity.Conta;
 
 import javax.swing.table.AbstractTableModel;
@@ -21,7 +20,7 @@ public class ContaTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return 7;
     }
 
     @Override
@@ -33,6 +32,7 @@ public class ContaTableModel extends AbstractTableModel {
             case 3 -> "Saldo";
             case 4 -> "Data Atualização";
             case 5 -> "Status";
+            case 6 -> "Tipo de Conta";
             default -> "";
         };
     }
@@ -48,6 +48,7 @@ public class ContaTableModel extends AbstractTableModel {
             case 3 -> conta.consultarSaldo();
             case 4 -> conta.getDataAtualizacao();
             case 5 -> conta.isStatus() ? "Ativo" : "Inativo";
+            case 6 -> conta.getTipoConta().toString();
             default -> "";
         };
     }

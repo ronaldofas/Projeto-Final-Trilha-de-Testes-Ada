@@ -133,6 +133,7 @@ public class ClienteTable extends JFrame {
                 banco.adicionarCliente(id, tipoCliente.getId(), nome);
                 txtCpfCnpj.setText("");
                 txtNome.setText("");
+                txtCpfCnpj.requestFocus();
 
                 // Atualizar a tabela
                 clientes = banco.obterClientes();

@@ -383,7 +383,7 @@ public class BancoController {
         int id = banco.obterNumeroDeContaPoupancaParaAbertura();
         ContaPoupanca conta;
         try {
-            conta = new ContaPoupanca(id, cliente);
+            conta = new ContaPoupanca(id, cliente, TipoDeContaEnum.CONTA_POUPANCA);
         } catch (RuntimeException ex){
             System.out.println("Conta não Aberta!!! " + ex.getMessage());
             aguardarRetorno();
@@ -397,7 +397,7 @@ public class BancoController {
 
     private void criarContaCorrente(Cliente cliente) {
         int numeroConta = banco.obterNumeroDeContaCorrenteParaAbertura();
-        ContaCorrente conta = new ContaCorrente(numeroConta, cliente);
+        ContaCorrente conta = new ContaCorrente(numeroConta, cliente, TipoDeContaEnum.CONTA_CORRENTE);
         banco.adicionarContaCorrenteNova(conta);
         System.out.printf("Conta número %d de %s aberta com sucesso!\n",
                 conta.getId(), conta.getCliente().getNome());

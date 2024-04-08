@@ -12,10 +12,10 @@ public class TelaInicial extends JFrame {
 
     private JPanel painelPrincipal;
     private JMenuBar menuBar;
-    private JMenu menuOpcoes, menuClientes, menuContas;
+    private JMenu menuOpcoes, menuClientes, menuContas, menuTransacoes;
     private JMenuItem itemOpcao1, itemOpcao2;
     private JMenuItem itemClientes1, itemClientes2;
-    private JMenuItem itemTabelaContas;
+    private JMenuItem itemTabelaContas, itemTransacoes;
     BancoGUIController banco;
 
     public TelaInicial() {
@@ -35,11 +35,13 @@ public class TelaInicial extends JFrame {
         //criarMenuOpcoes();
         criarMenuClientes();
         criarMenuContas();
+        criarMenuTransacoes();
 
         // Adicionar o Menu "Opções" ao Menu Bar
         //menuBar.add(menuOpcoes);
         menuBar.add(menuClientes);
         menuBar.add(menuContas);
+        menuBar.add(menuTransacoes);
 
         // Adicionar o Menu Bar à Janela
         setJMenuBar(menuBar);
@@ -98,6 +100,19 @@ public class TelaInicial extends JFrame {
             }
         });
         menuContas.add(itemTabelaContas);
+    }
+
+    private void criarMenuTransacoes(){
+        menuTransacoes = new JMenu("Transações");
+        itemTransacoes = new JMenuItem("Transações de Contas");
+
+        itemTransacoes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new TelaTransacoes(banco).setVisible(true);
+            }
+        });
+        menuTransacoes.add(itemTransacoes);
     }
 }
 
