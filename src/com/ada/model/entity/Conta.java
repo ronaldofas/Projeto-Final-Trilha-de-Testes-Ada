@@ -7,14 +7,15 @@ import java.time.LocalDate;
 
 public abstract class Conta {
 
-    protected int id;
-    protected double saldo;
-    protected LocalDate dataAtualizacao;
-    protected boolean status;
-    protected Cliente cliente;
-    protected TipoDeContaEnum tipoConta;
+    private String id;
+    private double saldo;
+    private LocalDate dataAtualizacao;
+    private boolean status;
+    private Cliente cliente;
+    private TipoDeContaEnum tipoConta;
 
-    public Conta(int id, Cliente cliente, TipoDeContaEnum tipoConta) {
+    public Conta(String id, Cliente cliente, TipoDeContaEnum tipoConta) {
+        validar(id, cliente);
         this.id = id;
         this.saldo = 0;
         this.dataAtualizacao = LocalDate.now();
@@ -23,7 +24,19 @@ public abstract class Conta {
         this.tipoConta = tipoConta;
     }
 
-    public int getId() {
+    private void validar(String id, Cliente cliente) {
+        if (id == null || id.isBlank()){
+            throw new IllegalArgumentException("O ID não pode ser nulo ou vazio!");
+        }
+        if (cliente == null){
+            throw new IllegalArgumentException("O Cliente não pode ser nulo!");
+        }
+        if (!cliente.isStatus()){
+            throw new IllegalArgumentException("Clientes inativos não podem abrir conta!");
+        }
+    }
+
+    public String getId() {
         return id;
     }
 
@@ -43,14 +56,17 @@ public abstract class Conta {
         return tipoConta;
     }
 
-    public double sacar(double valor)throws Exception {
+    public void sacar(double valor)throws Exception {
+        if (valor <= 0){
+            throw new IllegalArgumentException("O valor a sacar deve ser maior que zero");
+        }
         if (this.saldo > valor){
             this.saldo -= valor;
             System.out.println("Saque efetuado com sucesso!");
+            this.dataAtualizacao = LocalDate.now();
         } else {
-            throw new Exception("Valor de saque maior que o saldo.");
+            throw new IllegalArgumentException("Saldo insuficiente.");
         }
-        return valor;
     }
 
     protected double cobrarTarifa(double valorDoSaque, double taxa){
@@ -60,17 +76,19 @@ public abstract class Conta {
         return tarifa;
     }
 
-    public double depositar(double valor){
+    public void depositar(double valor){
+        if (valor <= 0){
+            throw new IllegalArgumentException("O valor a depositar deve ser maior que zero");
+        }
         this.saldo += valor;
+        this.dataAtualizacao = LocalDate.now();
         System.out.printf("Você depositou o valor de R$ %.2f\n", valor);
-        return valor;
     }
 
-    protected double adicionarRendimento(double valorDoSaque, double taxaDeRendimento) {
+    protected void adicionarRendimento(double valorDoSaque, double taxaDeRendimento) {
         double rendimento = ArredondamentoDouble.arredondar((valorDoSaque * taxaDeRendimento));
         this.saldo += rendimento;
         System.out.printf("Você recebeu o rendimento de R$ %.2f\n", rendimento);
-        return rendimento;
     }
 
     public double consultarSaldo(){
@@ -79,6 +97,10 @@ public abstract class Conta {
     }
 
     public void alterarStatus(){
+        if (this.saldo > 0){
+            throw new IllegalArgumentException(
+                    "A conta não pode ser desativada com o saldo maior que zero. Realize um saque!");
+        }
         this.status = !this.status;
     }
 }

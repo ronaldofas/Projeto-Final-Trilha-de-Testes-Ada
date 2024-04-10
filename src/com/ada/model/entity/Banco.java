@@ -60,18 +60,18 @@ public class Banco {
         clientes.add(cliente);
     }
 
-    public ContaPoupanca encontrarContaPoupancaPorId(int numeroConta) {
+    public ContaPoupanca encontrarContaPoupancaPorId(String numeroConta) {
         for (ContaPoupanca poupanca : contasPoupanca) {
-            if (poupanca != null && poupanca.getId() == numeroConta) {
+            if (poupanca != null && poupanca.getId().equals(numeroConta)) {
                 return poupanca;
             }
         }
         return null;
     }
 
-    public ContaCorrente encontrarContaCorrentePorId(int numeroConta) {
+    public ContaCorrente encontrarContaCorrentePorId(String numeroConta) {
         for (ContaCorrente corrente : contasCorrentes) {
-            if (corrente.getId() == numeroConta) {
+            if (corrente.getId().equals(numeroConta)) {
                 return corrente;
             }
         }
@@ -90,7 +90,7 @@ public class Banco {
         int numeroNovo = 0;
 
         for (ContaPoupanca conta : contasPoupanca){
-            if (conta.getId() > numeroNovo) numeroNovo = conta.getId();
+            if (Integer.parseInt(conta.getId()) > numeroNovo) numeroNovo = Integer.parseInt(conta.getId());
         }
         numeroNovo ++;
 
@@ -101,7 +101,7 @@ public class Banco {
         int numeroNovo = 0;
 
         for (ContaCorrente conta : contasCorrentes){
-            if (conta.getId() > numeroNovo) numeroNovo = conta.getId();
+            if (Integer.parseInt(conta.getId()) > numeroNovo) numeroNovo = Integer.parseInt(conta.getId());
         }
         numeroNovo ++;
 

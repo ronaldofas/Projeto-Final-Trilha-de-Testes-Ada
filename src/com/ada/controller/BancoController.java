@@ -287,7 +287,7 @@ public class BancoController {
 
     private void ConsultarSaldoConta() {
         TipoDeContaEnum tipoConta = obterTipoDeConta();
-        int numeroConta = obterNumeroConta();
+        String numeroConta = obterNumeroConta();
         if (tipoConta == TipoDeContaEnum.CONTA_POUPANCA){
             ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null) conta.consultarSaldo();
@@ -305,7 +305,7 @@ public class BancoController {
 
     private void SacarDaConta() {
         TipoDeContaEnum tipoConta = obterTipoDeConta();
-        int numeroConta = obterNumeroConta();
+        String numeroConta = obterNumeroConta();
         double valorDeposito = obterValorTransacao("sacado");
         if (tipoConta == TipoDeContaEnum.CONTA_POUPANCA){
             ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
@@ -334,7 +334,7 @@ public class BancoController {
 
     private void DepositarNaConta() {
         TipoDeContaEnum tipo = obterTipoDeConta();
-        int numeroConta = obterNumeroConta();
+        String numeroConta = obterNumeroConta();
         double valorDeposito = obterValorTransacao("depositado");
         if (tipo == TipoDeContaEnum.CONTA_POUPANCA){
             ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
@@ -364,12 +364,12 @@ public class BancoController {
         return valor;
     }
 
-    private int obterNumeroConta() {
+    private String obterNumeroConta() {
         int numeroConta;
         System.out.print("Informe o número da conta: ");
         numeroConta = ENTRADA.nextInt();
         clearBuffer(ENTRADA);
-        return numeroConta;
+        return Integer.toString(numeroConta);
     }
 
     private String obterNomeDoCliente() {
@@ -380,7 +380,7 @@ public class BancoController {
     }
 
     private void criarContaPoupanca(Cliente cliente) {
-        int id = banco.obterNumeroDeContaPoupancaParaAbertura();
+        String id = Integer.toString(banco.obterNumeroDeContaPoupancaParaAbertura());
         ContaPoupanca conta;
         try {
             conta = new ContaPoupanca(id, cliente, TipoDeContaEnum.CONTA_POUPANCA);
@@ -396,7 +396,7 @@ public class BancoController {
     }
 
     private void criarContaCorrente(Cliente cliente) {
-        int numeroConta = banco.obterNumeroDeContaCorrenteParaAbertura();
+        String numeroConta = Integer.toString(banco.obterNumeroDeContaCorrenteParaAbertura());
         ContaCorrente conta = new ContaCorrente(numeroConta, cliente, TipoDeContaEnum.CONTA_CORRENTE);
         banco.adicionarContaCorrenteNova(conta);
         System.out.printf("Conta número %d de %s aberta com sucesso!\n",

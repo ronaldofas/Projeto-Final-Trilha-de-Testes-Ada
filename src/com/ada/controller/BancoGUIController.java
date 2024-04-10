@@ -20,13 +20,13 @@ public class BancoGUIController {
     public void adicionarConta(String id, TipoDeContaEnum tipo) throws RuntimeException{
         switch (tipo){
             case TipoDeContaEnum.CONTA_POUPANCA -> {
-                int idConta = banco.obterNumeroDeContaPoupancaParaAbertura();
+                String idConta = Integer.toString(banco.obterNumeroDeContaCorrenteParaAbertura());
                 Cliente cliente = banco.pesquisarClientePorId(id);
                 ContaPoupanca conta = new ContaPoupanca(idConta, cliente, tipo);
                 banco.adicionarContaPoupancaNova(conta);
             }
             case TipoDeContaEnum.CONTA_CORRENTE -> {
-                int idConta = banco.obterNumeroDeContaCorrenteParaAbertura();
+                String idConta = Integer.toString(banco.obterNumeroDeContaCorrenteParaAbertura());
                 Cliente cliente = banco.pesquisarClientePorId(id);
                 ContaCorrente conta = new ContaCorrente(idConta, cliente, tipo);
                 banco.adicionarContaCorrenteNova(conta);
@@ -54,7 +54,7 @@ public class BancoGUIController {
         return  banco.obterListaDeContasCorrentes();
     }
 
-    public Conta obterContaPoupancaPorId (int id){
+    public Conta obterContaPoupancaPorId (String id){
         for (Conta conta : obterContasPoupanca()){
             if (conta.getId() == id){
                 return conta;
@@ -63,7 +63,7 @@ public class BancoGUIController {
         throw new RuntimeException("Conta não localizada!");
     }
 
-    public Conta obterContaCorrentePorId (int id){
+    public Conta obterContaCorrentePorId (String id){
         for (Conta conta : obterContasCorrente()){
             if (conta.getId() == id){
                 return conta;
@@ -72,7 +72,7 @@ public class BancoGUIController {
         throw new RuntimeException("Conta não localizada!");
     }
 
-    public Conta obterContaPorIdETipo(int id, TipoDeContaEnum tipo){
+    public Conta obterContaPorIdETipo(String id, TipoDeContaEnum tipo){
         if (tipo == TipoDeContaEnum.CONTA_POUPANCA)
             return obterContaPoupancaPorId(id);
         if (tipo == TipoDeContaEnum.CONTA_CORRENTE)

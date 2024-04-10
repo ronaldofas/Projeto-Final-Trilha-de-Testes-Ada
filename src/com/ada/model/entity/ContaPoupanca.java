@@ -8,15 +8,14 @@ public class ContaPoupanca extends Conta{
 
     private final double TAXARENDIMENTO = 0.005;
 
-    public ContaPoupanca(int id, Cliente cliente, TipoDeContaEnum tipoConta) {
+    public ContaPoupanca(String id, Cliente cliente, TipoDeContaEnum tipoConta) {
         super(id, cliente, tipoConta);
-        if (cliente == null) throw new RuntimeException("Cliente inválido ou não localizado!");
         if (cliente.getTipo() == TipoClienteEnum.PESSOA_JURIDICA)
-            throw new RuntimeException("Somente pessoas físicas podem ter conta poupança!");
+            throw new IllegalArgumentException("Somente pessoas físicas podem ter conta poupança!");
     }
 
-    public double depositar(double valor){
+    public void depositar(double valor){
         super.depositar(valor);
-        return valor + this.adicionarRendimento(valor, TAXARENDIMENTO);
+        super.adicionarRendimento(valor, TAXARENDIMENTO);
     }
 }

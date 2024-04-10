@@ -5,20 +5,23 @@ import com.ada.helpers.enums.TipoDeContaEnum;
 
 public class ContaCorrente extends Conta{
 
-    protected final double TAXADESAQUEPF = 0.02;
-    protected final double TAXADESAQUEPJ = 0.05;
+    protected final double TAXADESAQUEPF = 0.002;
+    protected final double TAXADESAQUEPJ = 0.005;
 
-    public ContaCorrente(int id, Cliente cliente, TipoDeContaEnum tipoConta) {
+    public ContaCorrente(String id, Cliente cliente, TipoDeContaEnum tipoConta) {
         super(id, cliente, tipoConta);
     }
 
-    public double sacar(double valor) throws Exception {
+    public void sacar(double valor) throws Exception {
         double taxa = 0.0;
-        if (cliente.getTipo() == TipoClienteEnum.PESSOA_FISICA) taxa = TAXADESAQUEPF;
-        if (cliente.getTipo() == TipoClienteEnum.PESSOA_JURIDICA) taxa = TAXADESAQUEPJ;
+        if (super.getCliente().getTipo().equals(TipoClienteEnum.PESSOA_FISICA)) {
+            taxa = TAXADESAQUEPF;
+        } else {
+            taxa = TAXADESAQUEPJ;
+        }
 
-        double saque = super.sacar(valor);
-        return saque + this.cobrarTarifa(valor, taxa);
+        super.cobrarTarifa(valor, taxa);
+        super.sacar(valor);
     }
 
 }

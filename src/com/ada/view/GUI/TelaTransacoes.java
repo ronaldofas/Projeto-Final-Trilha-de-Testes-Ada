@@ -2,9 +2,7 @@ package com.ada.view.GUI;
 
 import com.ada.controller.BancoGUIController;
 import com.ada.helpers.enums.TipoDeContaEnum;
-import com.ada.model.entity.Cliente;
 import com.ada.model.entity.Conta;
-import com.ada.view.GUI.model.ContaTableModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,7 +54,7 @@ public class TelaTransacoes extends JFrame {
             // Validar os dados
             String idConta = numeroContaTextField.getText();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
-            Conta conta = banco.obterContaPorIdETipo(Integer.parseInt(idConta), tipoConta);
+            Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);
             double saldo = 0.00;
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
@@ -83,7 +81,7 @@ public class TelaTransacoes extends JFrame {
             String idConta = numeroContaTextField.getText();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             String valorDeposito = valorDepositoTextField.getText();
-            Conta conta = banco.obterContaPorIdETipo(Integer.parseInt(idConta), tipoConta);
+            Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
                 JOptionPane
@@ -100,14 +98,8 @@ public class TelaTransacoes extends JFrame {
                     // Efetuar saque
                     double valorDepositado = 0;
                     try {
-                        valorDepositado = conta.depositar(Double.parseDouble(valorDeposito));
+                        conta.depositar(Double.parseDouble(valorDeposito));
                         JOptionPane.showMessageDialog(null, "Depósito efetuado com sucesso");
-                        if (tipoConta == TipoDeContaEnum.CONTA_POUPANCA) {
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    String.format("Creditado rendimento de R$ %.2f",
-                                            valorDepositado - Double.parseDouble(valorDeposito)));
-                        }
                     } catch (Exception ex){
                         JOptionPane
                                 .showMessageDialog(
@@ -124,7 +116,7 @@ public class TelaTransacoes extends JFrame {
             String idConta = numeroContaTextField.getText();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             String valorSaque = valorSaqueTextField.getText();
-            Conta conta = banco.obterContaPorIdETipo(Integer.parseInt(idConta), tipoConta);
+            Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
                 JOptionPane
@@ -138,16 +130,9 @@ public class TelaTransacoes extends JFrame {
                             .showMessageDialog(null, "É necessário preencher o valor a sacar!");
                 else {
                     // Efetuar saque
-                    double valorSacado = 0;
                     try {
-                        valorSacado = conta.sacar(Double.parseDouble(valorSaque));
+                        conta.sacar(Double.parseDouble(valorSaque));
                         JOptionPane.showMessageDialog(null, "Saque efetuado com suceso.");
-                        if (tipoConta == TipoDeContaEnum.CONTA_CORRENTE)
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    String.format("Foi cobrado o valor de R$ %.2f",
-                                            valorSacado -  Double.parseDouble(valorSaque))
-                            );
                     } catch (Exception ex){
                         JOptionPane
                                 .showMessageDialog(

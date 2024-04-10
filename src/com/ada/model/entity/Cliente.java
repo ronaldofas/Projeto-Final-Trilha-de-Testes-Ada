@@ -12,6 +12,7 @@ public class Cliente {
     private boolean status;
 
     public Cliente(String id, TipoClienteEnum tipo, String nome) {
+        validar(id, tipo, nome);
         this.id = id;
         this.tipo = tipo;
         this.nome = nome;
@@ -19,6 +20,17 @@ public class Cliente {
         this.status = true;
     }
 
+    private void validar(String id, TipoClienteEnum tipo, String nome) {
+        if(id == null || id.isBlank()){
+            throw new IllegalArgumentException("O ID não pode ser nulo ou vazio!");
+        }
+        if (tipo == null){
+            throw new IllegalArgumentException("O Tipo não pode ser nulo!");
+        }
+        if (nome == null || nome.trim().equals("")){
+            throw new IllegalArgumentException("O Nome não pode ser nulo ou vazio!");
+        }
+    }
 
 
     public String getId() {
@@ -42,6 +54,9 @@ public class Cliente {
     }
 
     public void alterarNome(String nome) {
+        if (nome == null || nome.trim().equals("")){
+            throw new IllegalArgumentException("O Nome não pode ser nulo ou vazio!");
+        }
         this.nome = nome;
     }
 
