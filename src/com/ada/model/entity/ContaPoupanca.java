@@ -1,8 +1,9 @@
 package com.ada.model.entity;
 
 
-import com.ada.helpers.enums.TipoClienteEnum;
-import com.ada.helpers.enums.TipoDeContaEnum;
+import com.ada.model.entity.cliente.Cliente;
+import com.ada.model.helpers.enums.Classificacao;
+import com.ada.model.helpers.enums.TipoDeContaEnum;
 
 public class ContaPoupanca extends Conta{
 
@@ -10,7 +11,7 @@ public class ContaPoupanca extends Conta{
 
     public ContaPoupanca(String id, Cliente cliente, TipoDeContaEnum tipoConta) {
         super(id, cliente, tipoConta);
-        if (cliente.getTipo() == TipoClienteEnum.PESSOA_JURIDICA)
+        if (cliente.getClassificacao() == Classificacao.PESSOA_JURIDICA)
             throw new IllegalArgumentException("Somente pessoas físicas podem ter conta poupança!");
     }
 

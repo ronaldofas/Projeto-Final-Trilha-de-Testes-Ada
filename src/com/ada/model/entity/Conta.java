@@ -1,8 +1,9 @@
 package com.ada.model.entity;
 
 
-import com.ada.helpers.enums.TipoDeContaEnum;
-import com.ada.helpers.services.ArredondamentoDouble;
+import com.ada.model.entity.cliente.Cliente;
+import com.ada.model.helpers.enums.TipoDeContaEnum;
+import com.ada.model.helpers.services.ArredondamentoDouble;
 import java.time.LocalDate;
 
 public abstract class Conta {

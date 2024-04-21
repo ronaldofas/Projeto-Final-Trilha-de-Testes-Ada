@@ -1,5 +1,7 @@
 package com.ada.model.entity;
 
+import com.ada.model.entity.cliente.Cliente;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class Banco {
 
     public Cliente pesquisarClientePorId(String idAhPesquisar) {
         for (Cliente cliente : clientes) {
-            if (cliente.getId().contains(idAhPesquisar)) {
+            if (cliente.getIdentificador().contains(idAhPesquisar)) {
                 System.out.println("Localizado: " + cliente);
                 return  cliente;
             }

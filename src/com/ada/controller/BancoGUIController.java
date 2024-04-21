@@ -1,20 +1,33 @@
 package com.ada.controller;
 
-import com.ada.helpers.enums.TipoClienteEnum;
-import com.ada.helpers.enums.TipoDeContaEnum;
+import com.ada.model.entity.cliente.CNPJ;
+import com.ada.model.entity.cliente.CPF;
+import com.ada.model.entity.cliente.Cliente;
+import com.ada.model.entity.interfaces.cliente.Identificador;
+import com.ada.model.helpers.enums.Classificacao;
+import com.ada.model.helpers.enums.TipoDeContaEnum;
 import com.ada.model.entity.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class BancoGUIController {
     private final Banco banco = new Banco();
 
-    public void adicionarCliente(String id, int tipo, String nome){
-        TipoClienteEnum tipoCliente = getTipoCliente(tipo);
-
+    public void adicionarCliente(String textoId, int tipo, String nome){
+        Classificacao tipoCliente = getTipoCliente(tipo);
+        Identificador<String> id = criarIdentificador(textoId, tipoCliente);
         Cliente cliente = new Cliente(id, tipoCliente, nome);
         banco.adicionarClienteNovo(cliente);
+    }
+
+    private static Identificador<String> criarIdentificador(String textoId, Classificacao tipoCliente) {
+        if (tipoCliente == Classificacao.PF){
+            return new CPF(textoId);
+        }
+        if (tipoCliente == Classificacao.PJ){
+            return new CNPJ(textoId);
+        }
+        throw new RuntimeException("Classificação inválida, reveja!");
     }
 
     public void adicionarConta(String id, TipoDeContaEnum tipo) throws RuntimeException{
@@ -35,11 +48,10 @@ public class BancoGUIController {
         }
     }
 
-    @NotNull
-    private static TipoClienteEnum getTipoCliente(int tipo) {
+    private static Classificacao getTipoCliente(int tipo) {
         return switch (tipo) {
-            case 0 -> TipoClienteEnum.PESSOA_FISICA;
-            case 1 -> TipoClienteEnum.PESSOA_JURIDICA;
+            case 0 -> Classificacao.PF;
+            case 1 -> Classificacao.PJ;
             default -> throw new RuntimeException("Tipo de Cliente inválido!!!");
         };
     }

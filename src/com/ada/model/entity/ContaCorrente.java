@@ -1,7 +1,8 @@
 package com.ada.model.entity;
 
-import com.ada.helpers.enums.TipoClienteEnum;
-import com.ada.helpers.enums.TipoDeContaEnum;
+import com.ada.model.entity.cliente.Cliente;
+import com.ada.model.helpers.enums.Classificacao;
+import com.ada.model.helpers.enums.TipoDeContaEnum;
 
 public class ContaCorrente extends Conta{
 
@@ -14,7 +15,7 @@ public class ContaCorrente extends Conta{
 
     public void sacar(double valor) throws Exception {
         double taxa = 0.0;
-        if (super.getCliente().getTipo().equals(TipoClienteEnum.PESSOA_FISICA)) {
+        if (super.getCliente().getClassificacao().equals(Classificacao.PF)) {
             taxa = TAXADESAQUEPF;
         } else {
             taxa = TAXADESAQUEPJ;

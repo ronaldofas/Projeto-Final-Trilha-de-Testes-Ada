@@ -1,6 +1,6 @@
 package com.ada.view.GUI.model;
 
-import com.ada.model.entity.Cliente;
+import com.ada.model.entity.cliente.Cliente;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
@@ -39,8 +39,8 @@ public class ClienteTableModel extends AbstractTableModel {
         Cliente cliente = clientes.get(rowIndex);
 
         return switch (columnIndex) {
-            case 0 -> cliente.getId();
-            case 1 -> cliente.getTipo().toString();
+            case 0 -> cliente.getIdentificador();
+            case 1 -> cliente.getClassificacao().toString();
             case 2 -> cliente.getNome();
             case 3 -> cliente.getDataCadastro().toString();
             case 4 -> cliente.isStatus() ? "Ativo" : "Inativo";

@@ -1,7 +1,7 @@
 package com.ada.view.GUI;
 
 import com.ada.controller.BancoGUIController;
-import com.ada.helpers.enums.TipoDeContaEnum;
+import com.ada.model.helpers.enums.TipoDeContaEnum;
 import com.ada.model.entity.Conta;
 
 import javax.swing.*;

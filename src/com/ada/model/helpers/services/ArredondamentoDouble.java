@@ -1,4 +1,4 @@
-package com.ada.helpers.services;
+package com.ada.model.helpers.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

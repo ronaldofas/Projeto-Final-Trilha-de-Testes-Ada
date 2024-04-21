@@ -1,14 +1,12 @@
 package com.ada.view.GUI;
 
 import com.ada.controller.BancoGUIController;
-import com.ada.helpers.enums.TipoClienteEnum;
-import com.ada.model.entity.Cliente;
+import com.ada.model.helpers.enums.Classificacao;
+import com.ada.model.entity.cliente.Cliente;
 import com.ada.view.GUI.model.ClienteTableModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ClienteTable extends JFrame {
@@ -19,7 +17,7 @@ public class ClienteTable extends JFrame {
     private JButton btnAdicionar;
     private JTextField txtNome;
     private JTextField txtCpfCnpj;
-    private JComboBox<TipoClienteEnum> cbTipoCliente;
+    private JComboBox<Classificacao> cbTipoCliente;
 
     private List<Cliente> clientes;
     BancoGUIController banco;
@@ -110,7 +108,7 @@ public class ClienteTable extends JFrame {
         // Criar os Campos de Entrada
         txtNome = new JTextField(20);
         txtCpfCnpj = new JTextField(14);
-        cbTipoCliente = new JComboBox<>(TipoClienteEnum.values());
+        cbTipoCliente = new JComboBox<>(Classificacao.values());
     }
 
     private void criarBotaoAdicionar() {
@@ -120,7 +118,7 @@ public class ClienteTable extends JFrame {
             // Validar os dados
             String id = txtCpfCnpj.getText();
             String nome = txtNome.getText();
-            TipoClienteEnum tipoCliente = (TipoClienteEnum) cbTipoCliente.getSelectedItem();
+            Classificacao tipoCliente = (Classificacao) cbTipoCliente.getSelectedItem();
 
             if ((id.isBlank() || id.isEmpty()) || (nome.isEmpty() || nome.isBlank())){
                 JOptionPane

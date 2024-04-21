@@ -43,7 +43,7 @@ public class ContaTableModel extends AbstractTableModel {
 
         return switch (columnIndex) {
             case 0 -> conta.getId();
-            case 1 -> conta.getCliente().getId();
+            case 1 -> conta.getCliente().getIdentificador();
             case 2 -> conta.getCliente().getNome();
             case 3 -> conta.consultarSaldo();
             case 4 -> conta.getDataAtualizacao();

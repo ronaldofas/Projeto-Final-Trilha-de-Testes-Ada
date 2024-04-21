@@ -1,9 +1,12 @@
 package com.ada.controller;
 
-import com.ada.helpers.enums.TipoClienteEnum;
-import com.ada.helpers.enums.TipoDeContaEnum;
+import com.ada.model.entity.cliente.CNPJ;
+import com.ada.model.entity.cliente.CPF;
+import com.ada.model.entity.interfaces.cliente.Identificador;
+import com.ada.model.helpers.enums.Classificacao;
+import com.ada.model.helpers.enums.TipoDeContaEnum;
 import com.ada.model.entity.Banco;
-import com.ada.model.entity.Cliente;
+import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.ContaCorrente;
 import com.ada.model.entity.ContaPoupanca;
 import com.ada.view.CLI.Menu;
@@ -122,7 +125,7 @@ public class BancoController {
     }
 
     private Cliente pesquisarClientePorId() {
-        String idAhPesquisar = obterIdCliente();
+        String idAhPesquisar = obterIdentificador();
         Cliente clienteLocalizado = banco.pesquisarClientePorId(idAhPesquisar);
         if (clienteLocalizado == null)
             throw new RuntimeException("Nenhum cliente localizado com o nome informado!");
@@ -138,8 +141,8 @@ public class BancoController {
     }
 
     private void criarCliente() {
-        TipoClienteEnum classificacao = obterTipoDeCliente();
-        String id = obterIdCliente();
+        Classificacao classificacao = obterTipoDeCliente();
+        Identificador<String> id = obterIdCliente(classificacao);
         String nomeCliente = obterNomeDoCliente();
         Cliente cliente = new Cliente(id, classificacao, nomeCliente);
         banco.adicionarClienteNovo(cliente);
@@ -147,7 +150,7 @@ public class BancoController {
         aguardarRetorno();
     }
 
-    private TipoClienteEnum obterTipoDeCliente() {
+    private Classificacao obterTipoDeCliente() {
         boolean escolhaEfetuada = false;
         int opcao = 0;
 
@@ -159,8 +162,8 @@ public class BancoController {
         }
         
         return switch (opcao){
-            case 1 -> TipoClienteEnum.PESSOA_FISICA;
-            case 2 -> TipoClienteEnum.PESSOA_JURIDICA;
+            case 1 -> Classificacao.PF;
+            case 2 -> Classificacao.PJ;
             default -> throw new IllegalStateException("Unexpected value: " + opcao);
         };
     }
@@ -239,11 +242,25 @@ public class BancoController {
         criarContaPoupanca(cliente);
     }
 
-    private String obterIdCliente() {
-        String id;
-        System.out.println("Digite o seu CPF/CNPJ: ");
-        id = ENTRADA.nextLine();
-        return id;
+    private Identificador<String> obterIdCliente(Classificacao classificacao) {
+        String texto;
+        if (classificacao == Classificacao.PF){
+            texto = obterIdentificador();
+            return new CPF(texto);
+        }
+        if (classificacao == Classificacao.PJ){
+            texto = obterIdentificador();
+            return new CNPJ(texto);
+        }
+
+        throw new IllegalArgumentException("Classificação inválida!");
+    }
+
+    private String obterIdentificador() {
+        String texto;
+        System.out.println("Digite o identificador: ");
+        texto = ENTRADA.nextLine();
+        return texto;
     }
 
     public void transacionarContas(){

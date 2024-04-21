@@ -1,4 +1,4 @@
-package com.ada.helpers.enums;
+package com.ada.model.helpers.enums;
 
 public enum TipoDeContaEnum {
     CONTA_POUPANCA("CP"),
