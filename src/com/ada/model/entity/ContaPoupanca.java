@@ -11,7 +11,7 @@ public class ContaPoupanca extends Conta{
 
     public ContaPoupanca(String id, Cliente cliente, TipoDeContaEnum tipoConta) {
         super(id, cliente, tipoConta);
-        if (cliente.getClassificacao() == Classificacao.PESSOA_JURIDICA)
+        if (cliente.getClassificacao() == Classificacao.PJ)
             throw new IllegalArgumentException("Somente pessoas físicas podem ter conta poupança!");
     }
 
