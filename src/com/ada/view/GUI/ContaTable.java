@@ -3,8 +3,8 @@ package com.ada.view.GUI;
 import com.ada.controller.BancoGUIController;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
 import com.ada.model.entity.Conta;
-import com.ada.model.entity.ContaCorrente;
-import com.ada.model.entity.ContaPoupanca;
+import com.ada.model.entity.conta.ContaCorrente;
+import com.ada.model.entity.conta.ContaPoupanca;
 import com.ada.view.GUI.model.ContaTableModel;
 
 import javax.swing.*;

@@ -3,6 +3,8 @@ package com.ada.controller;
 import com.ada.model.entity.cliente.CNPJ;
 import com.ada.model.entity.cliente.CPF;
 import com.ada.model.entity.cliente.Cliente;
+import com.ada.model.entity.conta.ContaCorrente;
+import com.ada.model.entity.conta.ContaPoupanca;
 import com.ada.model.entity.interfaces.cliente.Identificador;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.helpers.enums.TipoDeContaEnum;

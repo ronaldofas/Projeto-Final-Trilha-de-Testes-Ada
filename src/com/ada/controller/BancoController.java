@@ -2,13 +2,15 @@ package com.ada.controller;
 
 import com.ada.model.entity.cliente.CNPJ;
 import com.ada.model.entity.cliente.CPF;
+import com.ada.model.entity.conta.NumeroConta;
 import com.ada.model.entity.interfaces.cliente.Identificador;
+import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
 import com.ada.model.entity.Banco;
 import com.ada.model.entity.cliente.Cliente;
-import com.ada.model.entity.ContaCorrente;
-import com.ada.model.entity.ContaPoupanca;
+import com.ada.model.entity.conta.ContaCorrente;
+import com.ada.model.entity.conta.ContaPoupanca;
 import com.ada.view.CLI.Menu;
 
 import java.util.Scanner;
@@ -306,7 +308,7 @@ public class BancoController {
         TipoDeContaEnum tipoConta = obterTipoDeConta();
         String numeroConta = obterNumeroConta();
         if (tipoConta == TipoDeContaEnum.CONTA_POUPANCA){
-            ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
+            Conta conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null) conta.consultarSaldo();
             else throw new RuntimeException("Conta não localizada!");
         }
@@ -325,7 +327,7 @@ public class BancoController {
         String numeroConta = obterNumeroConta();
         double valorDeposito = obterValorTransacao("sacado");
         if (tipoConta == TipoDeContaEnum.CONTA_POUPANCA){
-            ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
+            Conta conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null){
                 try {
                     conta.sacar(valorDeposito);
@@ -354,7 +356,7 @@ public class BancoController {
         String numeroConta = obterNumeroConta();
         double valorDeposito = obterValorTransacao("depositado");
         if (tipo == TipoDeContaEnum.CONTA_POUPANCA){
-            ContaPoupanca conta = banco.encontrarContaPoupancaPorId(numeroConta);
+            Conta conta = banco.encontrarContaPoupancaPorId(numeroConta);
             if (conta != null) conta.depositar(valorDeposito);
             else throw new RuntimeException("Conta não localizada!");
         }
@@ -397,18 +399,18 @@ public class BancoController {
     }
 
     private void criarContaPoupanca(Cliente cliente) {
-        String id = Integer.toString(banco.obterNumeroDeContaPoupancaParaAbertura());
-        ContaPoupanca conta;
+        String id = banco.obterNumeroDeContaPoupancaParaAbertura();
+        Conta conta;
         try {
-            conta = new ContaPoupanca(id, cliente, TipoDeContaEnum.CONTA_POUPANCA);
+            conta = new ContaPoupanca(new NumeroConta(id), cliente);
         } catch (RuntimeException ex){
             System.out.println("Conta não Aberta!!! " + ex.getMessage());
             aguardarRetorno();
             return;
         }
         banco.adicionarContaPoupancaNova(conta);
-        System.out.printf("Conta número %d de %S aberta com sucesso!\n",
-                conta.getId(), conta.getCliente().getNome());
+        System.out.printf("Conta número %S de %S aberta com sucesso!\n",
+                conta.getNumero(), conta.getCliente().getNome());
         aguardarRetorno();
     }
 
