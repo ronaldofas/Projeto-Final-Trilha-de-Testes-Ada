@@ -5,7 +5,8 @@ import com.ada.model.entity.cliente.CPF;
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.conta.ContaCorrente;
 import com.ada.model.entity.conta.ContaPoupanca;
-import com.ada.model.entity.interfaces.cliente.Identificador;
+import com.ada.model.entity.interfaces.conta.Identificador;
+import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
 import com.ada.model.entity.*;
@@ -35,16 +36,14 @@ public class BancoGUIController {
     public void adicionarConta(String id, TipoDeContaEnum tipo) throws RuntimeException{
         switch (tipo){
             case TipoDeContaEnum.CONTA_POUPANCA -> {
-                String idConta = Integer.toString(banco.obterNumeroDeContaCorrenteParaAbertura());
                 Cliente cliente = banco.pesquisarClientePorId(id);
-                ContaPoupanca conta = new ContaPoupanca(idConta, cliente, tipo);
-                banco.adicionarContaPoupancaNova(conta);
+                ContaPoupanca conta = new ContaPoupanca(cliente);
+                banco.adicionarContaNova(conta);
             }
             case TipoDeContaEnum.CONTA_CORRENTE -> {
-                String idConta = Integer.toString(banco.obterNumeroDeContaCorrenteParaAbertura());
                 Cliente cliente = banco.pesquisarClientePorId(id);
-                ContaCorrente conta = new ContaCorrente(idConta, cliente, tipo);
-                banco.adicionarContaCorrenteNova(conta);
+                ContaCorrente conta = new ContaCorrente(cliente);
+                banco.adicionarContaNova(conta);
             }
             default -> throw new RuntimeException("Tipo de conta inválido!");
         }
@@ -61,25 +60,14 @@ public class BancoGUIController {
     public List<Cliente> obterClientes(){
         return banco.ObterListaDeClientes();
     }
-    public List<ContaPoupanca> obterContasPoupanca(){
-        return banco.obterListaDeContasPoupanca();
-    }
-    public List<ContaCorrente> obterContasCorrente(){
-        return  banco.obterListaDeContasCorrentes();
+
+    public List<com.ada.model.entity.interfaces.conta.Conta> obterContas(){
+        return banco.obterListaDeContas();
     }
 
-    public Conta obterContaPoupancaPorId (String id){
-        for (Conta conta : obterContasPoupanca()){
-            if (conta.getId() == id){
-                return conta;
-            }
-        }
-        throw new RuntimeException("Conta não localizada!");
-    }
-
-    public Conta obterContaCorrentePorId (String id){
-        for (Conta conta : obterContasCorrente()){
-            if (conta.getId() == id){
+    public Conta obterContaPorId(String id){
+        for (Conta conta : obterContas()){
+            if (conta.getNumero().equals(id)){
                 return conta;
             }
         }
@@ -88,9 +76,9 @@ public class BancoGUIController {
 
     public Conta obterContaPorIdETipo(String id, TipoDeContaEnum tipo){
         if (tipo == TipoDeContaEnum.CONTA_POUPANCA)
-            return obterContaPoupancaPorId(id);
+            return obterContaPorId(id);
         if (tipo == TipoDeContaEnum.CONTA_CORRENTE)
-            return obterContaCorrentePorId(id);
+            return obterContaPorId(id);
         throw new RuntimeException("Conta não localizada");
     }
 }

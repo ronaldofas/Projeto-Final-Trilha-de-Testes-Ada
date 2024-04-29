@@ -2,7 +2,6 @@ package com.ada.model.entity;
 
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.conta.ContaCorrente;
-import com.ada.model.entity.conta.ContaPoupanca;
 import com.ada.model.entity.interfaces.conta.Conta;
 
 import java.util.ArrayList;
@@ -10,25 +9,19 @@ import java.util.List;
 
 public class Banco {
     private final List<Cliente> clientes;
-    private final List<Conta> contasPoupanca;
-    private final List<ContaCorrente> contasCorrentes;
+    private final List<Conta> contas;
 
     public Banco() {
         clientes = new ArrayList<>();
-        contasPoupanca = new ArrayList<>();
-        contasCorrentes = new ArrayList<>();
+        contas = new ArrayList<>();
     }
 
     public List<Cliente> ObterListaDeClientes() {
         return new ArrayList<>(clientes);
     }
 
-    public List<ContaCorrente> obterListaDeContasCorrentes() {
-        return new ArrayList<>(contasCorrentes);
-    }
-
-    public List<Conta> obterListaDeContasPoupanca() {
-        return new ArrayList<>(contasPoupanca);
+    public List<Conta> obterListaDeContas() {
+        return new ArrayList<>(contas);
     }
 
     public Cliente pesquisarClientePorId(String idAhPesquisar) {
@@ -65,8 +58,8 @@ public class Banco {
         clientes.add(cliente);
     }
 
-    public Conta encontrarContaPoupancaPorId(String numeroConta) {
-        for (Conta poupanca : contasPoupanca) {
+    public Conta encontrarContaPorId(String numeroConta) {
+        for (Conta poupanca : contas) {
             if (poupanca != null && poupanca.getNumero().equals(numeroConta)) {
                 return poupanca;
             }
@@ -74,43 +67,19 @@ public class Banco {
         throw new RuntimeException("Conta não localizada");
     }
 
-    public ContaCorrente encontrarContaCorrentePorId(String numeroConta) {
-        for (ContaCorrente corrente : contasCorrentes) {
-            if (corrente.getId().equals(numeroConta)) {
-                return corrente;
-            }
-        }
-        return null;
+    public void adicionarContaNova(Conta conta){
+        contas.add(conta);
     }
 
-    public void adicionarContaPoupancaNova(Conta conta){
-        contasPoupanca.add(conta);
-    }
-
-    public void adicionarContaCorrenteNova(ContaCorrente conta){
-        contasCorrentes.add(conta);
-    }
-
-    public String obterNumeroDeContaPoupancaParaAbertura() {
+    public String obterNumeroDeContaParaAbertura() {
         int numeroNovo = 0;
 
-        for (Conta conta : contasPoupanca){
+        for (Conta conta : contas){
             if (Integer.parseInt(conta.getNumero()) > numeroNovo)
                 numeroNovo = Integer.parseInt(conta.getNumero());
         }
         numeroNovo ++;
 
         return Integer.toString(numeroNovo);
-    }
-
-    public int obterNumeroDeContaCorrenteParaAbertura() {
-        int numeroNovo = 0;
-
-        for (ContaCorrente conta : contasCorrentes){
-            if (Integer.parseInt(conta.getId()) > numeroNovo) numeroNovo = Integer.parseInt(conta.getId());
-        }
-        numeroNovo ++;
-
-        return numeroNovo;
     }
 }

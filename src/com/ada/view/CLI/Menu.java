@@ -1,8 +1,36 @@
 package com.ada.view.CLI;
 
+import com.ada.controller.BancoController;
+import com.ada.controller.ClienteController;
+import com.ada.infra.repositorios.inMemory.ClienteRepositorio;
+import com.ada.infra.repositorios.inMemory.ContaRepositorio;
+import com.ada.model.entity.cliente.CNPJ;
+import com.ada.model.entity.cliente.CPF;
+import com.ada.model.entity.cliente.Cliente;
+import com.ada.model.entity.conta.ContaCorrente;
+import com.ada.model.entity.conta.ContaPoupanca;
+import com.ada.model.entity.conta.Transacao;
+import com.ada.model.entity.interfaces.conta.Conta;
+import com.ada.model.entity.interfaces.conta.Identificador;
+import com.ada.model.helpers.enums.Classificacao;
+import com.ada.model.helpers.enums.TipoDeContaEnum;
+
 import java.io.IOException;
+import java.util.List;
+import java.util.Scanner;
 
 public class Menu {
+    BancoController bancoController;
+    ClienteController clienteController;
+    private final Scanner ENTRADA = new Scanner(System.in);
+
+    public Menu() {
+        ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
+        ContaRepositorio contaRepositorio = new ContaRepositorio();
+        bancoController = new BancoController(contaRepositorio);
+        clienteController = new ClienteController(clienteRepositorio);
+    }
+
     public void ExibirMenuInicial() {
         this.LimparTela();
         this.ImprimirCabecalho();
@@ -96,8 +124,11 @@ public class Menu {
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Depositar");
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Sacar");
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Consultar saldo");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Transferir");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "5 - Investir");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "6 - Exibir Extrato");
         System.out.println();
-        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Voltar para o menu principal");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "7 - Voltar para o menu principal");
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(80, '='));
         System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
@@ -120,5 +151,425 @@ public class Menu {
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(80, '='));
         System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
+    }
+
+
+    public void inicio(){
+        int opcao;
+        int tentativas = 0;
+        boolean fecharMenu = false;
+        ExibirMenuInicial();
+        while(!fecharMenu){
+            opcao = ENTRADA.nextInt();
+            clearBuffer(ENTRADA);
+            tentativas = getTentativas(opcao, 4, tentativas);
+            fecharMenu = validarOpcaoMenuInicio(opcao);
+
+            terminarLoopOuSair(opcao, tentativas, 4, true);
+        }
+    }
+
+    private static int getTentativas(int opcao, int x, int tentativas) {
+        if ((opcao > x || opcao < 1)) {
+            System.out.print("Opção inválida! Escolha uma opção: ");
+            tentativas++;
+        }
+        return tentativas;
+    }
+
+    private boolean validarOpcaoMenuInicio(int opcao) {
+        return switch (opcao) {
+            case 1 -> {
+                this.cadastroDeClientes();
+                yield false;
+            }
+            case 2 -> {
+                this.aberturaDeContas();
+                yield false;
+            }
+            case 3 -> {
+                this.transacionarContas();
+                yield false;
+            }
+            default -> true;
+        };
+    }
+
+    private static void terminarLoopOuSair(int opcao, int tentativas, int maiorOpcao, boolean sair) {
+        if (opcao == maiorOpcao || tentativas == 3){
+            if (tentativas == 3) {
+                System.out.println("Você parece indeciso, volte quando estiver preparado!");
+            }
+            if (sair) {
+                System.out.println("Obrigado por utilizar a Caixa Econômica Federal.");
+                System.exit(0);
+            }
+        }
+    }
+
+    public void cadastroDeClientes(){
+        int opcao;
+        int tentativas = 0;
+        boolean fecharMenu = false;
+        ImprimirCorpoDeCadastroDeCliente();
+        while (!fecharMenu){
+            opcao = ENTRADA.nextInt();
+            clearBuffer(ENTRADA);
+            tentativas = getTentativas(opcao, 5, tentativas);
+            fecharMenu = avaliarOpcaoMenuCadastroDeClientes(opcao);
+        }
+        inicio();
+    }
+
+    private boolean avaliarOpcaoMenuCadastroDeClientes(int opcao) {
+        return switch (opcao) {
+            case 1 -> {
+                criarCliente();
+                cadastroDeClientes();
+                yield false;
+            }
+            case 2 -> {
+                try {
+                    System.out.println(pesquisarClientePorNome());
+                } catch (RuntimeException ex){
+                    System.out.println(ex.getMessage());
+                    aguardarRetorno();
+                    cadastroDeClientes();
+                }
+                aguardarRetorno();
+                cadastroDeClientes();
+                yield false;
+            }
+            case 3 -> {
+                try {
+                    System.out.println(pesquisarClientePorId());
+                } catch (RuntimeException ex){
+                    System.out.println(ex.getMessage());
+                    aguardarRetorno();
+                    cadastroDeClientes();
+                }
+                aguardarRetorno();
+                cadastroDeClientes();
+                yield false;
+            }
+            case 4 -> {
+                imprimirClientes();
+                yield false;
+            }
+            default -> true;
+        };
+    }
+
+    private void imprimirClientes() {
+        for (Cliente cliente : clienteController.listarClientes()){
+            System.out.println(cliente);
+        }
+        aguardarRetorno();
+        cadastroDeClientes();
+    }
+
+    private Cliente pesquisarClientePorId() {
+        String idAhPesquisar = obterIdentificador();
+        return clienteController.buscarClientePorIdentificador(idAhPesquisar);
+    }
+
+    private Cliente pesquisarClientePorNome() {
+        String nomeAhPesquisar = obterNomeDoCliente();
+        return clienteController.buscarClientePorNome(nomeAhPesquisar);
+    }
+
+    private void criarCliente() {
+        Classificacao classificacao = obterTipoDeCliente();
+        Identificador<String> id = obterIdCliente(classificacao);
+        String nomeCliente = obterNomeDoCliente();
+        Cliente cliente = new Cliente(id, classificacao, nomeCliente);
+        clienteController.cadastrarCliente(cliente);
+        System.out.println(cliente);
+        aguardarRetorno();
+    }
+
+    private Classificacao obterTipoDeCliente() {
+        boolean escolhaEfetuada = false;
+        int opcao = 0;
+
+        while (!escolhaEfetuada){
+            System.out.println("Digite 1 - Pessoa Física (PF) ou 2 - Pessoa Jurídica (PJ): ");
+            opcao = ENTRADA.nextInt();
+            clearBuffer(ENTRADA);
+            if (opcao > 0 && opcao <= 2) escolhaEfetuada = true;
+        }
+
+        return switch (opcao){
+            case 1 -> Classificacao.PF;
+            case 2 -> Classificacao.PJ;
+            default -> throw new IllegalStateException("Unexpected value: " + opcao);
+        };
+    }
+
+    public void aberturaDeContas(){
+        int opcao;
+        int tentativas = 0;
+        boolean fecharMenu = false;
+        ExibirTelaDeAberturaDeConta();
+        while (!fecharMenu){
+            opcao = ENTRADA.nextInt();
+            clearBuffer(ENTRADA);
+            tentativas = getTentativas(opcao, 3, tentativas);
+            fecharMenu = validarOpcaoMenuAberturaDeContas(opcao);
+            terminarLoopOuSair(opcao, tentativas, 3, false);
+        }
+        this.inicio();
+    }
+
+    private boolean validarOpcaoMenuAberturaDeContas(int opcao) {
+        return switch (opcao) {
+            case 1 -> {
+                abrirContaPoupanca();
+                aberturaDeContas();
+                yield false;
+            }
+            case 2 -> {
+                abrirContaCorrente();
+                aberturaDeContas();
+                yield false;
+            }
+            default -> true;
+        };
+    }
+
+    private void abrirContaCorrente() {
+        Cliente cliente;
+        try {
+            cliente = pesquisarClientePorId();
+        } catch (RuntimeException ex){
+            System.out.println(ex.getMessage());
+            return;
+        }
+        bancoController.abrirConta(cliente, TipoDeContaEnum.CONTA_CORRENTE);
+        List<Conta> contas = bancoController.buscarContas(cliente.getIdentificador());
+        if (!contas.isEmpty()) {
+            for (Conta conta : contas) {
+                if (conta instanceof ContaCorrente) {
+                    System.out.printf("Conta número %S de %S aberta com sucesso!\n",
+                            conta.getNumero(), conta.getCliente().getNome());
+                    aguardarRetorno();
+                }
+            }
+        }
+    }
+
+    private void abrirContaPoupanca() {
+        Cliente cliente;
+        try {
+            cliente = pesquisarClientePorId();
+        } catch (RuntimeException ex){
+            System.out.println(ex.getMessage());
+            aguardarRetorno();
+            return;
+        }
+        try {
+            bancoController.abrirConta(cliente, TipoDeContaEnum.CONTA_POUPANCA);
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            aguardarRetorno();
+            return;
+
+        }
+        List<Conta> contas = bancoController.buscarContas(cliente.getIdentificador());
+        if (!contas.isEmpty()) {
+            for (Conta conta : contas) {
+                if (conta instanceof ContaPoupanca) {
+                    System.out.printf("Conta número %S de %S aberta com sucesso!\n",
+                            conta.getNumero(), conta.getCliente().getNome());
+                    aguardarRetorno();
+                }
+            }
+        }
+    }
+
+    private Identificador<String> obterIdCliente(Classificacao classificacao) {
+        if (classificacao == Classificacao.PF) return new CPF(obterIdentificador());
+        if (classificacao == Classificacao.PJ) return new CNPJ(obterIdentificador());
+        throw new IllegalArgumentException("Classificação inválida!");
+    }
+
+    private String obterIdentificador() {
+        System.out.println("Digite o identificador: ");
+        return ENTRADA.nextLine();
+    }
+
+    public void transacionarContas(){
+        int opcao;
+        int quebrar = 0;
+        boolean fecharMenu = false;
+        ExibirTelaDeTransacoesDeConta();
+        while (!fecharMenu){
+            opcao = ENTRADA.nextInt();
+            clearBuffer(ENTRADA);
+            quebrar = getTentativas(opcao, 7, quebrar);
+            fecharMenu = validarOpcaoMenuTransacionarContas(opcao);
+            terminarLoopOuSair(opcao, quebrar, 4, false);
+        }
+        this.inicio();
+    }
+
+    private boolean validarOpcaoMenuTransacionarContas(int opcao) {
+        return switch (opcao) {
+            case 1 -> {
+                try{
+                    DepositarNaConta();
+                } catch (RuntimeException ex){
+                    System.out.println(ex.getMessage());
+                    aguardarRetorno();
+                    yield false;
+                }
+                yield false;
+            }
+            case 2 -> {
+                try {
+                    SacarDaConta();
+                } catch (RuntimeException e){
+                    System.out.println(e.getMessage());
+                    aguardarRetorno();
+                    yield false;
+                }
+                yield false;
+            }
+            case 3 -> {
+                try {
+                    ConsultarSaldoConta();
+                } catch (RuntimeException e){
+                    System.out.println(e.getMessage());
+                    aguardarRetorno();
+                    yield false;
+                }
+                yield false;
+            }
+            case 4 -> {
+                try {
+                    transferirEntreContas();
+                } catch (RuntimeException e){
+                    System.out.println(e.getMessage());
+                    aguardarRetorno();
+                    yield false;
+                }
+                yield false;
+            }
+            case 5 -> {
+                try{
+                    investirValores();
+                } catch (RuntimeException e){
+                    System.out.println(e.getMessage());
+                    aguardarRetorno();
+                    yield false;
+                }
+                yield false;
+            }
+            case 6 -> {
+                try {
+                    exibirTransacoes();
+                } catch (RuntimeException e){
+                    System.out.println(e.getMessage());
+                    aguardarRetorno();
+                    yield false;
+                }
+                yield false;
+            }
+            default -> true;
+        };
+    }
+
+    private void exibirTransacoes() {
+        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        if (conta == null)
+            throw new RuntimeException("Conta não localizada.");
+        for (Transacao transacao : conta.getTransacoes())
+            System.out.println(transacao.toString());
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void investirValores() {
+        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        if (!(conta instanceof ContaCorrente))
+            throw new RuntimeException("Investimentos só podem ser efetuados a partir de uma conta corrente");
+        bancoController.investir((ContaCorrente) conta, obterValorTransacao("investido"));
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void ConsultarSaldoConta() {
+        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        if (conta != null) System.out.printf("Saldo atual da conta R$ %.2f.", conta.consultarSaldo());
+        else throw new RuntimeException("Conta não localizada!");
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void SacarDaConta() {
+        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        if (conta != null){
+            try {
+                bancoController.sacar(conta, obterValorTransacao("sacado"));
+            } catch (Exception e){
+                System.out.print("Não foi possível efetuar o saque. " + e.getLocalizedMessage());
+            }
+        } else throw new RuntimeException("Conta não localizada!");
+        clearBuffer(ENTRADA);
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void DepositarNaConta() {
+        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        if (conta != null)
+            bancoController.depositar(conta, obterValorTransacao("depositado"));
+        else throw new RuntimeException("Conta não localizada!");
+        clearBuffer(ENTRADA);
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void transferirEntreContas() {
+        System.out.println("Escolha a conta de ORIGEM: ");
+        Conta contaOrigem = bancoController.buscarConta(obterNumeroConta());
+        System.out.println("Escolha a conta de DESTINO: ");
+        Conta contaDestino = bancoController.buscarConta(obterNumeroConta());
+        if (contaOrigem != null && contaDestino != null)
+            bancoController.transferir(contaOrigem, contaDestino, obterValorTransacao("transferido"));
+        else throw new RuntimeException("Uma das contas não localizadas");
+        clearBuffer(ENTRADA);
+        aguardarRetorno();
+        transacionarContas();
+    }
+
+    private void aguardarRetorno() {
+        System.out.println("Pressione enter para voltar ao menu: ");
+        ENTRADA.nextLine();
+    }
+
+    private double obterValorTransacao(String transacao) {
+        System.out.printf("Informe o valor a ser %s: ", transacao);
+        return ENTRADA.nextDouble();
+    }
+
+    private String obterNumeroConta() {
+        String numeroConta;
+        System.out.println(
+                "Informe o número da conta, lembrando que poupança começa com (CP), \n" +
+                "corrente com (CC) e investimento com (CI) seguido de 4 digitos: ");
+        numeroConta = ENTRADA.nextLine().toUpperCase();
+        return numeroConta;
+    }
+
+    private String obterNomeDoCliente() {
+        System.out.println("Digite o seu nome: ");
+        return ENTRADA.nextLine();
+    }
+
+    private static void clearBuffer(Scanner scanner) {
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
+        }
     }
 }

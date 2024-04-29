@@ -1,6 +1,6 @@
 package com.ada.model.entity.cliente;
 
-import com.ada.model.entity.interfaces.cliente.Identificador;
+import com.ada.model.entity.interfaces.conta.Identificador;
 
 public class CPF implements Identificador<String> {
     private final String CPF;

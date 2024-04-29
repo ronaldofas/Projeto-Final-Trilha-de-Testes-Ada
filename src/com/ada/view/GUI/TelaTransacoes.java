@@ -1,8 +1,8 @@
 package com.ada.view.GUI;
 
 import com.ada.controller.BancoGUIController;
+import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
-import com.ada.model.entity.Conta;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,7 +52,7 @@ public class TelaTransacoes extends JFrame {
     private void adicionarFuncionalidadeAoBotaoConsultarSaldo() {
         consultarSaldoButton.addActionListener(e -> {
             // Validar os dados
-            String idConta = numeroContaTextField.getText();
+            String idConta = obterIdFormatado();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);
             double saldo = 0.00;
@@ -78,7 +78,7 @@ public class TelaTransacoes extends JFrame {
     private void adicionarFuncionalidadeAoBotaoDepositar() {
         depositarButton.addActionListener(e -> {
             // Validar os dados
-            String idConta = numeroContaTextField.getText();
+            String idConta = obterIdFormatado();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             String valorDeposito = valorDepositoTextField.getText();
             Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);
@@ -110,10 +110,14 @@ public class TelaTransacoes extends JFrame {
         });
     }
 
+    private String obterIdFormatado() {
+        return String.format("%04d", Integer.parseInt(numeroContaTextField.getText()));
+    }
+
     private void adicionarFuncionalidadeAoBotaoSacar() {
         sacarButton.addActionListener(e -> {
             // Validar os dados
-            String idConta = numeroContaTextField.getText();
+            String idConta = obterIdFormatado();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             String valorSaque = valorSaqueTextField.getText();
             Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);

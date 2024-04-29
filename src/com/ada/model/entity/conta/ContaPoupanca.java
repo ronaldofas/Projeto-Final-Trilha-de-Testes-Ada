@@ -2,8 +2,11 @@ package com.ada.model.entity.conta;
 
 
 import com.ada.model.entity.cliente.Cliente;
-import com.ada.model.entity.interfaces.conta.Conta;
+import com.ada.model.entity.interfaces.conta.ContaRentavel;
+import com.ada.model.entity.interfaces.conta.ContaTarifavel;
 import com.ada.model.entity.interfaces.conta.Identificador;
+import com.ada.model.entity.interfaces.conta.Conta;
+import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.helpers.enums.TipoTransacao;
 import com.ada.model.helpers.services.ArredondamentoDouble;
 
@@ -11,23 +14,31 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContaPoupanca implements Conta {
+public class ContaPoupanca implements ContaRentavel {
 
-    private List<Transacao> transacoes;
+    private static int numero = 0;
+    private final List<Transacao> transacoes;
     private LocalDateTime dataAtualizacao;
     private double saldo;
-    private Identificador<String> numeroConta;
-    private Cliente cliente;
+    private final Identificador<String> numeroConta;
+    private final Cliente cliente;
     private boolean status;
     private final double TAXARENDIMENTO = 0.005;
 
-    public ContaPoupanca(Identificador<String> numeroConta, Cliente cliente) {
-        this.numeroConta = numeroConta;
+    public ContaPoupanca(Cliente cliente) {
+        validarCliente(cliente);
+        numero++;
+        this.numeroConta = new NumeroConta("CP" + String.format("%04d", numero));
         this.cliente = cliente;
         transacoes = new ArrayList<>();
         dataAtualizacao = LocalDateTime.now();
         saldo = 0;
         status = true;
+    }
+
+    private void validarCliente(Cliente cliente) {
+        if (cliente.getClassificacao() == Classificacao.PJ)
+            throw new IllegalArgumentException("Somente pessoas físicas podem abrir poupança.");
     }
 
     @Override
@@ -40,27 +51,36 @@ public class ContaPoupanca implements Conta {
         return numeroConta.getValor();
     }
 
+    @Override
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
     public void depositar(double valor){
-        validarValorTransacao(valor);
+        validarValorTransacao(valor, false);
         adicionarRendimento(valor);
-        gravarTransacao(TipoTransacao.DEPOSITO, valor, "Deposito efetuado", cliente);
-        System.out.printf("Depósito no valor de R$ %.2f efetuado.", valor);;
+        saldo += valor;
+        System.out.printf("Depósito no valor de R$ %.2f efetuado.\n", valor);;
     }
 
     @Override
     public void sacar(double valor) {
-        validarValorTransacao(valor);
-        gravarTransacao(TipoTransacao.SAQUE, valor, "SAQUE EFETUADO", cliente);
+        validarValorTransacao(valor, true);
         saldo -= valor;
-        System.out.printf("Saque no valor de R$ %.2f efetuado", valor);
+        System.out.printf("Saque no valor de R$ %.2f efetuado\n", valor);
     }
 
     @Override
     public void transferir(double valor, Conta conta) {
-        validarValorTransacao(valor);
-        gravarTransacao(TipoTransacao.TRANSFERENCIA, valor, "Valor transferido", conta.getCliente());
+        validarValorTransacao(valor, false);
+        conta.depositar(valor);
         saldo -= valor;
-        System.out.printf("Transferência no valor de R$ %.2f efetuada", valor);
+        System.out.printf("Transferência no valor de R$ %.2f da conta %S para a conta %S efetuada\n", valor,
+                getNumero(), conta.getNumero());
     }
 
     @Override
@@ -68,22 +88,46 @@ public class ContaPoupanca implements Conta {
         return saldo;
     }
 
-    private static void validarValorTransacao(double valor) {
+    @Override
+    public void ativarDesativar() {
+        status = !status;
+    }
+
+    @Override
+    public List<Transacao> getTransacoes() {
+        return transacoes;
+    }
+
+    @Override
+    public void criarTransacao(Transacao transacao) {
+        transacoes.add(transacao);
+    }
+
+    private void validarValorTransacao(double valor, boolean saque) {
         if (valor <= 0 ){
             throw new IllegalArgumentException("Valor deve ser maior que 0");
+        }
+
+        if (valor > saldo && saque){
+            throw new IllegalArgumentException("Valor maior que o saldo disponível!");
         }
     }
 
     private void adicionarRendimento(double valorDoSaque) {
         double rendimento = ArredondamentoDouble.arredondar((valorDoSaque * TAXARENDIMENTO));
         this.saldo += rendimento;
-        gravarTransacao(TipoTransacao.DEPOSITO, rendimento, "Rendimento sobre depósito", cliente);
         System.out.printf("Você recebeu o rendimento de R$ %.2f\n", rendimento);
     }
 
-    private void gravarTransacao(TipoTransacao tipo, double valor, String observacao, Cliente cliente) {
+    private void gravarTransacao(TipoTransacao tipo, double valor) {
         Transacao transacao =
-                new Transacao(tipo, valor, observacao, cliente);
-        this.transacoes.add(transacao);
+                new Transacao(tipo, valor);
+        transacoes.add(transacao);
+        dataAtualizacao = LocalDateTime.now();
+    }
+
+    @Override
+    public double calcularRendimento(double valorDoDeposito) {
+        return valorDoDeposito * TAXARENDIMENTO;
     }
 }

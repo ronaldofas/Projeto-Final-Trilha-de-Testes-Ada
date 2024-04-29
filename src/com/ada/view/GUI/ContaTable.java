@@ -1,8 +1,8 @@
 package com.ada.view.GUI;
 
 import com.ada.controller.BancoGUIController;
+import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
-import com.ada.model.entity.Conta;
 import com.ada.model.entity.conta.ContaCorrente;
 import com.ada.model.entity.conta.ContaPoupanca;
 import com.ada.view.GUI.model.ContaTableModel;
@@ -60,18 +60,9 @@ public class ContaTable extends JFrame {
     }
 
     private void obterContas() {
-        contasPoupanca.clear();
-        contasCorrente.clear();
         contas.clear();
 
-        contasCorrente = banco.obterContasCorrente();
-        contasPoupanca = banco.obterContasPoupanca();
-        for (Conta conta : contasCorrente){
-            contas.add(conta);
-        }
-        for (Conta conta : contasPoupanca){
-            contas.add(conta);
-        }
+        contas = banco.obterContas();
     }
 
     private void organizarComponentesNoGrid() {

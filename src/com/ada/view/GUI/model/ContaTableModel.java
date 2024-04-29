@@ -1,8 +1,12 @@
 package com.ada.view.GUI.model;
 
-import com.ada.model.entity.Conta;
+
+import com.ada.model.entity.conta.ContaCorrente;
+import com.ada.model.entity.conta.ContaPoupanca;
+import com.ada.model.entity.interfaces.conta.Conta;
 
 import javax.swing.table.AbstractTableModel;
+import java.lang.reflect.Array;
 import java.util.List;
 
 public class ContaTableModel extends AbstractTableModel {
@@ -42,18 +46,27 @@ public class ContaTableModel extends AbstractTableModel {
         Conta conta = contas.get(rowIndex);
 
         return switch (columnIndex) {
-            case 0 -> conta.getId();
+            case 0 -> conta.getNumero();
             case 1 -> conta.getCliente().getIdentificador();
             case 2 -> conta.getCliente().getNome();
             case 3 -> conta.consultarSaldo();
             case 4 -> conta.getDataAtualizacao();
             case 5 -> conta.isStatus() ? "Ativo" : "Inativo";
-            case 6 -> conta.getTipoConta().toString();
+            case 6 -> obtemTipoDeConta(conta);
             default -> "";
         };
     }
 
     public void atualizarContas(List<Conta> contas){
         this.contas = contas;
+    }
+
+    private String obtemTipoDeConta(Conta conta){
+        if (conta instanceof ContaPoupanca){
+            return "Poupança";
+        } else if (conta instanceof ContaCorrente){
+            return "Corrente";
+        }
+        throw new IllegalArgumentException("Conta inválida");
     }
 }
