@@ -19,6 +19,7 @@ public class Cliente {
         this.nome = nome;
         this.dataCadastro = LocalDate.now();
         this.status = true;
+        validar(this.id.getValor(), this.classificacao, this.nome);
     }
 
     public void alterarNome(String nome) {
@@ -46,6 +47,10 @@ public class Cliente {
 
     public String getNome() {
         return nome;
+    }
+
+    public Identificador<String> getId() {
+        return id;
     }
 
     public boolean isStatus() {

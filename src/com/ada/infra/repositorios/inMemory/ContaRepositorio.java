@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContaRepositorio implements IContaRepositorio {
-    List<Conta> contas;
+    final List<Conta> contas;
 
     public ContaRepositorio() {
         this.contas = new ArrayList<>();
@@ -54,7 +54,7 @@ public class ContaRepositorio implements IContaRepositorio {
 
     @Override
     public void removerConta(Conta conta) {
-
+        contas.remove(conta);
     }
 
     @Override

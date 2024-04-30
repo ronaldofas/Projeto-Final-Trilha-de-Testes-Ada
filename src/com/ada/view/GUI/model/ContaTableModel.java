@@ -2,11 +2,11 @@ package com.ada.view.GUI.model;
 
 
 import com.ada.model.entity.conta.ContaCorrente;
+import com.ada.model.entity.conta.ContaInvestimento;
 import com.ada.model.entity.conta.ContaPoupanca;
 import com.ada.model.entity.interfaces.conta.Conta;
 
 import javax.swing.table.AbstractTableModel;
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class ContaTableModel extends AbstractTableModel {
@@ -66,6 +66,8 @@ public class ContaTableModel extends AbstractTableModel {
             return "Poupança";
         } else if (conta instanceof ContaCorrente){
             return "Corrente";
+        } else if (conta instanceof ContaInvestimento){
+            return "Investimento";
         }
         throw new IllegalArgumentException("Conta inválida");
     }

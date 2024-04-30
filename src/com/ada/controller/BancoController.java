@@ -39,6 +39,10 @@ public class BancoController {
         return contaRepositorio.buscarContas(id);
     }
 
+    public List<Conta> listarTodasAsContas(){
+        return contaRepositorio.buscarContas();
+    }
+
     public void depositar(Conta conta, double valor){
         validarValor(conta, valor, false);
         conta.depositar(valor);
@@ -67,12 +71,12 @@ public class BancoController {
     public void transferir(Conta contaOrigem, Conta contaDestino, double valor){
         validarValor(contaOrigem, valor, true);
         contaOrigem.transferir(valor, contaDestino);
-        adicionarTransacaoParaClienteDiferentes(TipoTransacao.TRANSFERENCIA, contaOrigem, contaDestino, valor);
+        adicionarTransacaoParaClienteDiferentes(contaOrigem, contaDestino, valor);
     }
 
     private static void adicionarTransacaoParaClienteDiferentes(
-            TipoTransacao tipo, Conta contaOrigem, Conta contaDestino, double valor) {
-        Transacao transacaoOrigem = new Transacao(tipo, valor);
+            Conta contaOrigem, Conta contaDestino, double valor) {
+        Transacao transacaoOrigem = new Transacao(TipoTransacao.TRANSFERENCIA, valor);
         transacaoOrigem.setRemetente(contaOrigem.getCliente());
         transacaoOrigem.setDestinatario(contaDestino.getCliente());
         contaOrigem.criarTransacao(transacaoOrigem);

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteRepositorio implements IClienteRepositorio {
-    List<Cliente> clientes;
+    final List<Cliente> clientes;
 
     public ClienteRepositorio() {
         this.clientes = new ArrayList<>();

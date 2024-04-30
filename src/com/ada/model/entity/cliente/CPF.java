@@ -7,6 +7,7 @@ public class CPF implements Identificador<String> {
 
     public CPF(String CPF) {
         this.CPF = CPF;
+        this.validar();
     }
 
     @Override
@@ -19,8 +20,8 @@ public class CPF implements Identificador<String> {
         if (CPF == null || CPF.isBlank()){
             throw new IllegalArgumentException("Preencha corretamente o CPF");
         }
-        if (CPF.length() < 11){
-            throw new IllegalArgumentException("CPF deve possui 11 digitos, verifique!");
+        if (CPF.length() != 11){
+            throw new IllegalArgumentException("CPF deve possuir 11 digitos, verifique!");
         }
     }
 }

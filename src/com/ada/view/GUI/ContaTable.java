@@ -1,10 +1,10 @@
 package com.ada.view.GUI;
 
-import com.ada.controller.BancoGUIController;
+import com.ada.controller.BancoController;
+import com.ada.controller.ClienteController;
+import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
-import com.ada.model.entity.conta.ContaCorrente;
-import com.ada.model.entity.conta.ContaPoupanca;
 import com.ada.view.GUI.model.ContaTableModel;
 
 import javax.swing.*;
@@ -22,20 +22,18 @@ public class ContaTable extends JFrame {
     private JComboBox<TipoDeContaEnum> cbTipoConta;
 
     private List<Conta> contas;
-    private List<ContaPoupanca> contasPoupanca;
-    private List<ContaCorrente> contasCorrente;
-    private BancoGUIController banco;
+    private final BancoController banco;
+    private final ClienteController cliente;
     private ContaTableModel contaTableModel;
 
-    public ContaTable(BancoGUIController banco) {
+    public ContaTable(BancoController banco, ClienteController cliente) {
         // Configurações da Janela
         setTitle("Contas");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.banco = banco;
+        this.cliente = cliente;
         contas = new ArrayList<>();
-        contasPoupanca = new ArrayList<>();
-        contasCorrente = new ArrayList<>();
 
         obterContas();
 
@@ -60,9 +58,9 @@ public class ContaTable extends JFrame {
     }
 
     private void obterContas() {
-        contas.clear();
+        //this.contas.clear();
 
-        contas = banco.obterContas();
+        this.contas = this.banco.listarTodasAsContas();
     }
 
     private void organizarComponentesNoGrid() {
@@ -125,7 +123,7 @@ public class ContaTable extends JFrame {
             // Validar os dados
             String id = txtCpfCnpj.getText();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) cbTipoConta.getSelectedItem();
-
+            Cliente clienteAhAdicionar = cliente.buscarClientePorIdentificador(id);
             if ((id.isBlank() || id.isEmpty()) ){
                 JOptionPane
                         .showMessageDialog(
@@ -136,7 +134,7 @@ public class ContaTable extends JFrame {
                 // Adicionar o novo Cliente à lista
                 if(tipoConta != null) {
                     try {
-                        banco.adicionarConta(id, tipoConta);
+                        this.banco.abrirConta(clienteAhAdicionar, tipoConta);
                         txtCpfCnpj.setText("");
                         txtCpfCnpj.requestFocus();
                     } catch (RuntimeException ex){

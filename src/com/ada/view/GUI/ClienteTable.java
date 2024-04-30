@@ -1,6 +1,9 @@
 package com.ada.view.GUI;
 
-import com.ada.controller.BancoGUIController;
+import com.ada.controller.ClienteController;
+import com.ada.model.entity.cliente.CNPJ;
+import com.ada.model.entity.cliente.CPF;
+import com.ada.model.entity.interfaces.conta.Identificador;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.view.GUI.model.ClienteTableModel;
@@ -20,16 +23,16 @@ public class ClienteTable extends JFrame {
     private JComboBox<Classificacao> cbTipoCliente;
 
     private List<Cliente> clientes;
-    BancoGUIController banco;
+    private final ClienteController cliente;
     private ClienteTableModel clienteTableModel;
 
-    public ClienteTable(BancoGUIController banco) {
+    public ClienteTable(ClienteController cliente) {
         // Configurações da Janela
         setTitle("Clientes");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.banco = banco;
-        clientes = banco.obterClientes();
+        this.cliente = cliente;
+        clientes = this.cliente.listarClientes();
 
         criarPainelPrincipal();
 
@@ -117,8 +120,14 @@ public class ClienteTable extends JFrame {
         btnAdicionar.addActionListener(e -> {
             // Validar os dados
             String id = txtCpfCnpj.getText();
-            String nome = txtNome.getText();
+            Identificador<String> identificador = null;
             Classificacao tipoCliente = (Classificacao) cbTipoCliente.getSelectedItem();
+            try {
+                identificador = getIdentificador(tipoCliente, id);
+            } catch (IllegalArgumentException er){
+                JOptionPane.showMessageDialog(null, er.getMessage());
+            }
+            String nome = txtNome.getText();
 
             if ((id.isBlank() || id.isEmpty()) || (nome.isEmpty() || nome.isBlank())){
                 JOptionPane
@@ -128,17 +137,28 @@ public class ClienteTable extends JFrame {
                         );
             } else {
                 // Adicionar o novo Cliente à lista
-                banco.adicionarCliente(id, tipoCliente.getId(), nome);
+                if (identificador != null){
+                    Cliente clienteAhAdicionar = new Cliente(identificador, tipoCliente, nome);
+                    cliente.cadastrarCliente(clienteAhAdicionar);
+                }
                 txtCpfCnpj.setText("");
                 txtNome.setText("");
                 txtCpfCnpj.requestFocus();
 
                 // Atualizar a tabela
-                clientes = banco.obterClientes();
+                clientes = cliente.listarClientes();
                 atualizarClientesDaTabela();
                 ((ClienteTableModel) tabelaClientes.getModel()).fireTableDataChanged();
             }
         });
+    }
+
+    private static Identificador<String> getIdentificador(Classificacao tipoCliente, String id) {
+        if (tipoCliente == Classificacao.PF)
+            return new CPF(id);
+        if (tipoCliente == Classificacao.PJ)
+            return new CNPJ(id);
+        throw new IllegalArgumentException("Tipo de cliente inválido ou não reconhecido!");
     }
 
     private void criarScrollPane() {

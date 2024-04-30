@@ -2,8 +2,6 @@ package com.ada.view.CLI;
 
 import com.ada.controller.BancoController;
 import com.ada.controller.ClienteController;
-import com.ada.infra.repositorios.inMemory.ClienteRepositorio;
-import com.ada.infra.repositorios.inMemory.ContaRepositorio;
 import com.ada.model.entity.cliente.CNPJ;
 import com.ada.model.entity.cliente.CPF;
 import com.ada.model.entity.cliente.Cliente;
@@ -20,15 +18,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
-    BancoController bancoController;
-    ClienteController clienteController;
+    final BancoController bancoController;
+    final ClienteController clienteController;
     private final Scanner ENTRADA = new Scanner(System.in);
 
-    public Menu() {
-        ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
-        ContaRepositorio contaRepositorio = new ContaRepositorio();
-        bancoController = new BancoController(contaRepositorio);
-        clienteController = new ClienteController(clienteRepositorio);
+    public Menu(BancoController bancoController, ClienteController clienteController) {
+        this.clienteController = clienteController;
+        this.bancoController = bancoController;
     }
 
     public void ExibirMenuInicial() {
@@ -421,7 +417,7 @@ public class Menu {
                 } catch (RuntimeException ex){
                     System.out.println(ex.getMessage());
                     aguardarRetorno();
-                    yield false;
+                    transacionarContas();
                 }
                 yield false;
             }
@@ -431,7 +427,7 @@ public class Menu {
                 } catch (RuntimeException e){
                     System.out.println(e.getMessage());
                     aguardarRetorno();
-                    yield false;
+                    transacionarContas();
                 }
                 yield false;
             }
@@ -441,7 +437,7 @@ public class Menu {
                 } catch (RuntimeException e){
                     System.out.println(e.getMessage());
                     aguardarRetorno();
-                    yield false;
+                    transacionarContas();
                 }
                 yield false;
             }
@@ -451,7 +447,7 @@ public class Menu {
                 } catch (RuntimeException e){
                     System.out.println(e.getMessage());
                     aguardarRetorno();
-                    yield false;
+                    transacionarContas();
                 }
                 yield false;
             }
@@ -461,7 +457,7 @@ public class Menu {
                 } catch (RuntimeException e){
                     System.out.println(e.getMessage());
                     aguardarRetorno();
-                    yield false;
+                    transacionarContas();
                 }
                 yield false;
             }
@@ -471,7 +467,7 @@ public class Menu {
                 } catch (RuntimeException e){
                     System.out.println(e.getMessage());
                     aguardarRetorno();
-                    yield false;
+                    transacionarContas();
                 }
                 yield false;
             }

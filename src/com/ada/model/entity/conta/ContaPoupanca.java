@@ -3,11 +3,9 @@ package com.ada.model.entity.conta;
 
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.interfaces.conta.ContaRentavel;
-import com.ada.model.entity.interfaces.conta.ContaTarifavel;
 import com.ada.model.entity.interfaces.conta.Identificador;
 import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.Classificacao;
-import com.ada.model.helpers.enums.TipoTransacao;
 import com.ada.model.helpers.services.ArredondamentoDouble;
 
 import java.time.LocalDateTime;
@@ -18,7 +16,7 @@ public class ContaPoupanca implements ContaRentavel {
 
     private static int numero = 0;
     private final List<Transacao> transacoes;
-    private LocalDateTime dataAtualizacao;
+    private final LocalDateTime dataAtualizacao;
     private double saldo;
     private final Identificador<String> numeroConta;
     private final Cliente cliente;
@@ -64,7 +62,7 @@ public class ContaPoupanca implements ContaRentavel {
         validarValorTransacao(valor, false);
         adicionarRendimento(valor);
         saldo += valor;
-        System.out.printf("Depósito no valor de R$ %.2f efetuado.\n", valor);;
+        System.out.printf("Depósito no valor de R$ %.2f efetuado.\n", valor);
     }
 
     @Override
@@ -75,12 +73,12 @@ public class ContaPoupanca implements ContaRentavel {
     }
 
     @Override
-    public void transferir(double valor, Conta conta) {
+    public void transferir(double valor, Conta contaDestino) {
         validarValorTransacao(valor, false);
-        conta.depositar(valor);
+        contaDestino.depositar(valor);
         saldo -= valor;
         System.out.printf("Transferência no valor de R$ %.2f da conta %S para a conta %S efetuada\n", valor,
-                getNumero(), conta.getNumero());
+                getNumero(), contaDestino.getNumero());
     }
 
     @Override
@@ -117,13 +115,6 @@ public class ContaPoupanca implements ContaRentavel {
         double rendimento = ArredondamentoDouble.arredondar((valorDoSaque * TAXARENDIMENTO));
         this.saldo += rendimento;
         System.out.printf("Você recebeu o rendimento de R$ %.2f\n", rendimento);
-    }
-
-    private void gravarTransacao(TipoTransacao tipo, double valor) {
-        Transacao transacao =
-                new Transacao(tipo, valor);
-        transacoes.add(transacao);
-        dataAtualizacao = LocalDateTime.now();
     }
 
     @Override

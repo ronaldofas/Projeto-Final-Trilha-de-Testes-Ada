@@ -1,6 +1,7 @@
 package com.ada;
 
 import com.ada.controller.BancoController;
+import com.ada.controller.ClienteController;
 import com.ada.infra.repositorios.inMemory.ClienteRepositorio;
 import com.ada.infra.repositorios.inMemory.ContaRepositorio;
 import com.ada.view.CLI.Menu;
@@ -15,11 +16,15 @@ public class Main {
         // Crie as funcionalidades: sacar, depositar, consultar saldo.
 
         // Cria o Menu
-        boolean gui = false;
+        boolean gui = true;
+        ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
+        ContaRepositorio contaRepositorio = new ContaRepositorio();
+        BancoController banco = new BancoController(contaRepositorio);
+        ClienteController cliente = new ClienteController(clienteRepositorio);
 
         if (gui)
-            new TelaInicial().setVisible(true);
+            new TelaInicial(banco, cliente).setVisible(true);
         else
-            new Menu().inicio();
+            new Menu(banco, cliente).inicio();
     }
 }

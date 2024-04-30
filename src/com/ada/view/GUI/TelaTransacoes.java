@@ -1,27 +1,35 @@
 package com.ada.view.GUI;
 
-import com.ada.controller.BancoGUIController;
+import com.ada.controller.BancoController;
+import com.ada.model.entity.conta.ContaCorrente;
+import com.ada.model.entity.conta.Transacao;
 import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
+import com.ada.view.GUI.model.TransacaoModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TelaTransacoes extends JFrame {
 
-    private JPanel painelPrincipal, aba1, aba2, aba3;
+    private JPanel painelPrincipal, aba1, aba2, aba3, aba4, aba5, aba6;
     private JComboBox<TipoDeContaEnum> tipoContaComboBox;
     private JTextField numeroContaTextField, valorSaqueTextField, valorDepositoTextField;
-    private JTextArea resultadoSacarTextArea, resultadoDepositarTextArea, consultaSaldoTextArea;
     private JButton sacarButton, depositarButton, consultarSaldoButton;
     private JTabbedPane painelComAbas;
-    private JLabel valorSaqueLabel, valorDepositoLabel;
-    private BancoGUIController banco;
+    private final BancoController banco;
+    private TransacaoModel transacaoModel;
+    private JTable tabelaTransacoes;
+    private List<Transacao> transacoes;
+    private JScrollPane scrollPane;
 
-    public TelaTransacoes(BancoGUIController banco) {
+    public TelaTransacoes(BancoController banco) {
         super("Transações Bancárias");
 
         this.banco = banco;
+        this.transacoes = new ArrayList<>();
 
         configurarAhTela();
 
@@ -41,6 +49,14 @@ public class TelaTransacoes extends JFrame {
 
         criaObjetosAba3();
 
+        criaObjetosAba4();
+
+        criaObjetosAba5();
+
+        criarTabela();
+
+        criaObjetosAba6();
+
         adicionarFuncionalidadeAoBotaoSacar();
 
         adicionarFuncionalidadeAoBotaoDepositar();
@@ -54,8 +70,8 @@ public class TelaTransacoes extends JFrame {
             // Validar os dados
             String idConta = obterIdFormatado();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
-            Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);
-            double saldo = 0.00;
+            Conta conta = banco.buscarConta(idConta);
+            double saldo;
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
                 JOptionPane
@@ -79,9 +95,8 @@ public class TelaTransacoes extends JFrame {
         depositarButton.addActionListener(e -> {
             // Validar os dados
             String idConta = obterIdFormatado();
-            TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             String valorDeposito = valorDepositoTextField.getText();
-            Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);
+            Conta conta = banco.buscarConta(idConta);
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
                 JOptionPane
@@ -111,7 +126,7 @@ public class TelaTransacoes extends JFrame {
     }
 
     private String obterIdFormatado() {
-        return String.format("%04d", Integer.parseInt(numeroContaTextField.getText()));
+        return String.format(numeroContaTextField.getText());
     }
 
     private void adicionarFuncionalidadeAoBotaoSacar() {
@@ -120,7 +135,7 @@ public class TelaTransacoes extends JFrame {
             String idConta = obterIdFormatado();
             TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             String valorSaque = valorSaqueTextField.getText();
-            Conta conta = banco.obterContaPorIdETipo(idConta, tipoConta);
+            Conta conta = banco.buscarConta(idConta);
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
                 JOptionPane
@@ -147,6 +162,128 @@ public class TelaTransacoes extends JFrame {
         });
     }
 
+    private void criaObjetosAba6() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        aba6.add(scrollPane, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JButton extratoButton = new JButton("Gerar extrato");
+        aba6.add(extratoButton, gbc);
+
+        extratoButton.addActionListener(e -> {
+            Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
+            transacoes = contaOrigem.getTransacoes();
+            transacaoModel.atualizarTransacoes(transacoes);
+            transacaoModel.fireTableDataChanged();
+        });
+    }
+
+    private void criarTabela() {
+        transacaoModel = new TransacaoModel(transacoes);
+        tabelaTransacoes = new JTable(transacaoModel);
+        scrollPane = new JScrollPane(tabelaTransacoes);
+        transacaoModel.atualizarTransacoes(transacoes);
+    }
+
+    private void criaObjetosAba5() {
+        // Rótulo "Valor"
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        JLabel valorInvestirLabel = new JLabel("Valor a investir: ");
+        aba5.add(valorInvestirLabel, gbc);
+
+        // Campo de texto "Valor"
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        JTextField valorInvestirTextField = new JTextField(10);
+        aba5.add(valorInvestirTextField, gbc);
+
+        // Botão "Investir"
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JButton investirButton = new JButton("Investir");
+        aba5.add(investirButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JTextArea resultadoInvestirTextArea = new JTextArea();
+        aba5.add(resultadoInvestirTextArea, gbc);
+
+        try {
+            investirButton.addActionListener(e -> {
+                String valorAhTransferirCapturado = valorInvestirTextField.getText();
+                double valorTransacao = Double.parseDouble(valorAhTransferirCapturado);
+                Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
+                if (!(contaOrigem instanceof ContaCorrente))
+                    throw new RuntimeException(
+                            "Investimentos só podem ser efetuados a partir de uma conta corrente");
+                this.banco.investir((ContaCorrente) contaOrigem, valorTransacao);
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        String.format(
+                                "Investimento na conta do cliente %S efetuada com sucesso!",
+                                contaOrigem.getCliente().getNome()
+                                )
+                );
+            });
+        } catch (RuntimeException e){
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    private void criaObjetosAba4() {
+        // Rótulo "Conta Destino"
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        JLabel contaDestinoLbl = new JLabel("Conta destino: ");
+        aba4.add(contaDestinoLbl, gbc);
+
+        // Campo de texto "conta destino"
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        JTextField contaDestinoTextField = new JTextField(10);
+        aba4.add(contaDestinoTextField, gbc);
+
+        // Rótulo "Valor"
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        JLabel valorAhTransferir = new JLabel("Valor a transferir: ");
+        aba4.add(valorAhTransferir, gbc);
+
+        // Campo de texto "Valor"
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        JTextField valorAhTransferirTextField = new JTextField(10);
+        aba4.add(valorAhTransferirTextField, gbc);
+
+        // Botão "Investir"
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JButton transferirButton = new JButton("Transferir");
+        aba4.add(transferirButton, gbc);
+
+        transferirButton.addActionListener(e -> {
+            String valorAhTransferirCapturado = valorAhTransferirTextField.getText();
+            double valorTransacao = Double.parseDouble(valorAhTransferirCapturado);
+            Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
+            Conta contaDestino = banco.buscarConta(contaDestinoTextField.getText().toUpperCase());
+            this.banco.transferir(contaOrigem, contaDestino, valorTransacao);
+
+            JOptionPane.showMessageDialog(null,"Transferência efetuada com sucesso!");
+        });
+    }
+
     private void criaObjetosAba3() {
         // Botão "Depositar"
         GridBagConstraints gbc = new GridBagConstraints();
@@ -158,7 +295,7 @@ public class TelaTransacoes extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        consultaSaldoTextArea = new JTextArea();
+        JTextArea consultaSaldoTextArea = new JTextArea();
         aba3.add(consultaSaldoTextArea);
     }
 
@@ -168,7 +305,7 @@ public class TelaTransacoes extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 10, 10);
-        valorDepositoLabel = new JLabel("Valor a depositar: ");
+        JLabel valorDepositoLabel = new JLabel("Valor a depositar: ");
         aba2.add(valorDepositoLabel, gbc);
 
         // Campo de texto "Valor"
@@ -185,7 +322,7 @@ public class TelaTransacoes extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        resultadoDepositarTextArea = new JTextArea();
+        JTextArea resultadoDepositarTextArea = new JTextArea();
         aba2.add(resultadoDepositarTextArea);
     }
 
@@ -195,7 +332,7 @@ public class TelaTransacoes extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 10, 10);
-        valorSaqueLabel = new JLabel("Valor a sacar: ");
+        JLabel valorSaqueLabel = new JLabel("Valor a sacar: ");
         aba1.add(valorSaqueLabel, gbc);
 
         // Campo de texto "Valor"
@@ -212,7 +349,7 @@ public class TelaTransacoes extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        resultadoSacarTextArea = new JTextArea();
+        JTextArea resultadoSacarTextArea = new JTextArea();
         aba1.add(resultadoSacarTextArea, gbc);
     }
 
@@ -228,6 +365,18 @@ public class TelaTransacoes extends JFrame {
         aba3 = new JPanel();
         aba3.setLayout(new GridBagLayout());
         painelComAbas.insertTab("Consultar Saldo", null, aba3, "", 2);
+
+        aba4 = new JPanel();
+        aba4.setLayout(new GridBagLayout());
+        painelComAbas.insertTab("Transferir", null, aba4, "", 3);
+
+        aba5 = new JPanel();
+        aba5.setLayout(new GridBagLayout());
+        painelComAbas.insertTab("Investir", null, aba5, "", 4);
+
+        aba6 = new JPanel();
+        aba6.setLayout(new GridBagLayout());
+        painelComAbas.insertTab("Extrato", null, aba6, "", 5);
     }
 
     private void criarPainelDeAbas() {

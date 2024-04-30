@@ -17,7 +17,7 @@ public class CNPJ implements Identificador<String> {
 
     @Override
     public void validar() {
-        if (CNPJ.length() < 14){
+        if (CNPJ == null || CNPJ.length() != 14){
             throw new IllegalArgumentException("O CNPJ deve possuir 14 digitos, verifique!");
         }
     }

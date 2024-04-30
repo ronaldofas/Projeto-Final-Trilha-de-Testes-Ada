@@ -14,11 +14,11 @@ public class ContaCorrente implements ContaTarifavel {
 
     private static int numero = 0;
     private boolean status;
-    private Cliente cliente;
-    private Identificador<String> numeroConta;
+    private final Cliente cliente;
+    private final Identificador<String> numeroConta;
     private double saldo;
-    private LocalDateTime dataAtualizacao;
-    private List<Transacao> transacoes;
+    private final LocalDateTime dataAtualizacao;
+    private final List<Transacao> transacoes;
 
     protected final double TAXADESAQUEPF = 0.002;
     protected final double TAXADESAQUEPJ = 0.005;

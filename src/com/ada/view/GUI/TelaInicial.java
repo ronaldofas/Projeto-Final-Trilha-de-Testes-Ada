@@ -1,36 +1,33 @@
 package com.ada.view.GUI;
 
 import com.ada.controller.BancoController;
-import com.ada.controller.BancoGUIController;
-
+import com.ada.controller.ClienteController;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class TelaInicial extends JFrame {
 
-    private JPanel painelPrincipal;
-    private JMenuBar menuBar;
-    private JMenu menuOpcoes, menuClientes, menuContas, menuTransacoes;
-    private JMenuItem itemOpcao1, itemOpcao2;
-    private JMenuItem itemClientes1, itemClientes2;
-    private JMenuItem itemTabelaContas, itemTransacoes;
-    BancoGUIController banco;
+    private JMenu menuClientes;
+    private JMenu menuContas;
+    private JMenu menuTransacoes;
+    private JMenuItem itemClientes1;
+    final BancoController banco;
+    final ClienteController cliente;
 
-    public TelaInicial() {
+    public TelaInicial(BancoController banco, ClienteController cliente) {
         // Configurações da Janela
         setTitle("Caixa Econômica Federal");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        banco = new BancoGUIController();
+        this.banco = banco;
+        this.cliente = cliente;
 
         // Criar o Painel Principal
-        painelPrincipal = new JPanel();
+        JPanel painelPrincipal = new JPanel();
         painelPrincipal.setLayout(new GridBagLayout());
 
         // Criar o Menu Bar
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
         //criarMenuOpcoes();
         criarMenuClientes();
@@ -56,11 +53,11 @@ public class TelaInicial extends JFrame {
 
     private void criarMenuOpcoes() {
         // Criar o Menu "Opções"
-        menuOpcoes = new JMenu("Opções");
+        JMenu menuOpcoes = new JMenu("Opções");
 
         // Criar os Itens de Menu
-        itemOpcao1 = new JMenuItem("Opção 1");
-        itemOpcao2 = new JMenuItem("Opção 2");
+        JMenuItem itemOpcao1 = new JMenuItem("Opção 1");
+        JMenuItem itemOpcao2 = new JMenuItem("Opção 2");
 
         // Adicionar os Itens de Menu ao Menu "Opções"
         menuOpcoes.add(itemOpcao1);
@@ -70,48 +67,26 @@ public class TelaInicial extends JFrame {
     private void criarMenuClientes(){
         menuClientes = new JMenu("Clientes");
         //itemClientes1 = new JMenuItem("Adicionar Cliente");
-        itemClientes2 = new JMenuItem("Tabela de Clientes");
+        JMenuItem itemClientes2 = new JMenuItem("Tabela de Clientes");
 
-//        itemClientes1.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                new AdicionarClienteForm().setVisible(true);
-//            }
-//        });
-
-        itemClientes2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new ClienteTable(banco).setVisible(true);
-            }
-        });
+        itemClientes2.addActionListener(e -> new ClienteTable(this.cliente).setVisible(true));
         //menuClientes.add(itemClientes1);
         menuClientes.add(itemClientes2);
     }
 
     private void criarMenuContas(){
         menuContas = new JMenu("Contas");
-        itemTabelaContas = new JMenuItem("Tabela de Contas");
+        JMenuItem itemTabelaContas = new JMenuItem("Tabela de Contas");
 
-        itemTabelaContas.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new ContaTable(banco).setVisible(true);
-            }
-        });
+        itemTabelaContas.addActionListener(e -> new ContaTable(this.banco, this.cliente).setVisible(true));
         menuContas.add(itemTabelaContas);
     }
 
     private void criarMenuTransacoes(){
         menuTransacoes = new JMenu("Transações");
-        itemTransacoes = new JMenuItem("Transações de Contas");
+        JMenuItem itemTransacoes = new JMenuItem("Transações de Contas");
 
-        itemTransacoes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new TelaTransacoes(banco).setVisible(true);
-            }
-        });
+        itemTransacoes.addActionListener(e -> new TelaTransacoes(banco).setVisible(true));
         menuTransacoes.add(itemTransacoes);
     }
 }
