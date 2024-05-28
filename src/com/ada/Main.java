@@ -17,10 +17,10 @@ public class Main {
 
         // Cria o Menu
         boolean gui = true;
-        ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
-        ContaRepositorio contaRepositorio = new ContaRepositorio();
-        BancoController banco = new BancoController(contaRepositorio);
-        ClienteController cliente = new ClienteController(clienteRepositorio);
+        final ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
+        final ContaRepositorio contaRepositorio = new ContaRepositorio();
+        final BancoController banco = new BancoController(contaRepositorio);
+        final ClienteController cliente = new ClienteController(clienteRepositorio);
 
         if (gui)
             new TelaInicial(banco, cliente).setVisible(true);
