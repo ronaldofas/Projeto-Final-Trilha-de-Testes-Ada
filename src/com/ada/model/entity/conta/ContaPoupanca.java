@@ -21,12 +21,12 @@ public class ContaPoupanca implements ContaRentavel {
     private final Identificador<String> numeroConta;
     private final Cliente cliente;
     private boolean status;
-    private final double TAXARENDIMENTO = 0.005;
+    private static final double TAXARENDIMENTO = 0.005;
 
-    public ContaPoupanca(Cliente cliente) {
+    public ContaPoupanca(final Cliente cliente) {
         validarCliente(cliente);
         numero++;
-        this.numeroConta = new NumeroConta("CP" + String.format("%04d", numero));
+        this.numeroConta = new NumeroConta(String.format("%06d", numero));
         this.cliente = cliente;
         transacoes = new ArrayList<>();
         dataAtualizacao = LocalDateTime.now();
@@ -34,7 +34,7 @@ public class ContaPoupanca implements ContaRentavel {
         status = true;
     }
 
-    private void validarCliente(Cliente cliente) {
+    private void validarCliente(final Cliente cliente) {
         if (cliente.getClassificacao() == Classificacao.PJ)
             throw new IllegalArgumentException("Somente pessoas físicas podem abrir poupança.");
     }
@@ -58,26 +58,26 @@ public class ContaPoupanca implements ContaRentavel {
         return status;
     }
 
-    public void depositar(double valor){
+    public void depositar(final double valor){
         validarValorTransacao(valor, false);
         adicionarRendimento(valor);
         saldo += valor;
-        System.out.printf("Depósito no valor de R$ %.2f efetuado.\n", valor);
+        System.out.printf("Depósito no valor de R$ %.2f efetuado.%n", valor);
     }
 
     @Override
-    public void sacar(double valor) {
+    public void sacar(final double valor) {
         validarValorTransacao(valor, true);
         saldo -= valor;
-        System.out.printf("Saque no valor de R$ %.2f efetuado\n", valor);
+        System.out.printf("Saque no valor de R$ %.2f efetuado%n", valor);
     }
 
     @Override
-    public void transferir(double valor, Conta contaDestino) {
+    public void transferir(final double valor, final Conta contaDestino) {
         validarValorTransacao(valor, false);
         contaDestino.depositar(valor);
         saldo -= valor;
-        System.out.printf("Transferência no valor de R$ %.2f da conta %S para a conta %S efetuada\n", valor,
+        System.out.printf("Transferência no valor de R$ %.2f da conta %S para a conta %S efetuada%n", valor,
                 getNumero(), contaDestino.getNumero());
     }
 
@@ -97,11 +97,11 @@ public class ContaPoupanca implements ContaRentavel {
     }
 
     @Override
-    public void criarTransacao(Transacao transacao) {
+    public void criarTransacao(final Transacao transacao) {
         transacoes.add(transacao);
     }
 
-    private void validarValorTransacao(double valor, boolean saque) {
+    private void validarValorTransacao(final double valor, final boolean saque) {
         if (valor <= 0 ){
             throw new IllegalArgumentException("Valor deve ser maior que 0");
         }
@@ -114,11 +114,11 @@ public class ContaPoupanca implements ContaRentavel {
     private void adicionarRendimento(double valorDoSaque) {
         double rendimento = ArredondamentoDouble.arredondar((valorDoSaque * TAXARENDIMENTO));
         this.saldo += rendimento;
-        System.out.printf("Você recebeu o rendimento de R$ %.2f\n", rendimento);
+        System.out.printf("Você recebeu o rendimento de R$ %.2f%n", rendimento);
     }
 
     @Override
-    public double calcularRendimento(double valorDoDeposito) {
+    public double calcularRendimento(final double valorDoDeposito) {
         return valorDoDeposito * TAXARENDIMENTO;
     }
 }

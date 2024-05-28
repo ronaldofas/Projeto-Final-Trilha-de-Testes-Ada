@@ -16,9 +16,9 @@ public class ContaInvestimento implements Conta {
     private final LocalDateTime dataAtualizacao;
     private final List<Transacao> transacoes;
 
-    public ContaInvestimento(Cliente cliente) {
+    public ContaInvestimento(final Cliente cliente) {
         numero++;
-        numeroConta = new NumeroConta("CI" + String.format("%04d", numero));
+        numeroConta = new NumeroConta(String.format("%06d", numero));
         this.cliente = cliente;
         saldo = 0;
         status = true;
@@ -47,19 +47,19 @@ public class ContaInvestimento implements Conta {
     }
 
     @Override
-    public void depositar(double valor) {
+    public void depositar(final double valor) {
         validarValorTransacao(valor, false);
         saldo += valor;
     }
 
     @Override
-    public void sacar(double valor) {
+    public void sacar(final double valor) {
         validarValorTransacao(valor, true);
         saldo -= valor;
     }
 
     @Override
-    public void transferir(double valor, Conta contaDestino) {
+    public void transferir(final double valor, final Conta contaDestino) {
         validarValorTransacao(valor, false);
         contaDestino.depositar(valor);
         saldo -= valor;
@@ -81,11 +81,11 @@ public class ContaInvestimento implements Conta {
     }
 
     @Override
-    public void criarTransacao(Transacao transacao) {
+    public void criarTransacao(final Transacao transacao) {
         transacoes.add(transacao);
     }
 
-    private void validarValorTransacao(double valor, boolean saque) {
+    private void validarValorTransacao(final double valor, final boolean saque) {
         if (valor <= 0 ){
             throw new IllegalArgumentException("Valor deve ser maior que 0");
         }

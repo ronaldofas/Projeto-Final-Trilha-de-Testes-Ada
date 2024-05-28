@@ -23,7 +23,8 @@ public class TelaTransacoes extends JFrame {
     private TransacaoModel transacaoModel;
     private JTable tabelaTransacoes;
     private List<Transacao> transacoes;
-    private JScrollPane scrollPane;
+    private JScrollPane scrollPane, scrollDoTexto;
+    private JTextArea textoLongo;
 
     public TelaTransacoes(BancoController banco) {
         super("Transações Bancárias");
@@ -53,7 +54,8 @@ public class TelaTransacoes extends JFrame {
 
         criaObjetosAba5();
 
-        criarTabela();
+        // criarTabela();
+        criarTextoEscrolavel();
 
         criaObjetosAba6();
 
@@ -82,11 +84,8 @@ public class TelaTransacoes extends JFrame {
             } else {
                 // Efetuar saque
                 saldo = conta.consultarSaldo();
-                JOptionPane
-                        .showMessageDialog(
-                                null,
-                                String.format("O saldo atual da conta é de R$ %.2f", saldo)
-                        );
+                var textoSaldo = String.format("O saldo atual da conta é de R$ %.2f", (Object)saldo);
+                JOptionPane.showMessageDialog(null,textoSaldo);
             }
         });
     }
@@ -168,7 +167,7 @@ public class TelaTransacoes extends JFrame {
         gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        aba6.add(scrollPane, gbc);
+        aba6.add(scrollDoTexto, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -178,8 +177,19 @@ public class TelaTransacoes extends JFrame {
         extratoButton.addActionListener(e -> {
             Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
             transacoes = contaOrigem.getTransacoes();
-            transacaoModel.atualizarTransacoes(transacoes);
-            transacaoModel.fireTableDataChanged();
+            // transacaoModel.atualizarTransacoes(transacoes);
+            // transacaoModel.fireTableDataChanged();
+            String extratoPronto = "";
+            extratoPronto = " Extrato da Conta n° " + contaOrigem.getNumero();
+            extratoPronto += "\n Cliente: " + contaOrigem.getCliente().getNome();
+            extratoPronto += "\n";
+            extratoPronto += "\n Data - Tipo transação  - Destinatario - Valor - Observação";
+            for (Transacao t : transacoes){
+                extratoPronto += "\n" + t.toString();
+            }
+            extratoPronto += "\n\nSaldo: " + contaOrigem.consultarSaldo();
+            textoLongo.setText("");
+            textoLongo.setText(extratoPronto);
         });
     }
 
@@ -188,6 +198,12 @@ public class TelaTransacoes extends JFrame {
         tabelaTransacoes = new JTable(transacaoModel);
         scrollPane = new JScrollPane(tabelaTransacoes);
         transacaoModel.atualizarTransacoes(transacoes);
+    }
+
+    private void criarTextoEscrolavel(){
+        textoLongo = new JTextArea();
+        scrollDoTexto = new JScrollPane(textoLongo);
+        scrollDoTexto.setPreferredSize(new Dimension(300,200));
     }
 
     private void criaObjetosAba5() {
@@ -433,7 +449,7 @@ public class TelaTransacoes extends JFrame {
 
     private void configurarAhTela() {
         // Configurações da tela
-        setSize(800, 600);
+        setSize(1024, 768);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
     }

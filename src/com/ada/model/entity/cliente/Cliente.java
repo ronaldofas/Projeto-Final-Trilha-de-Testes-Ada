@@ -12,7 +12,7 @@ public class Cliente {
     private final LocalDate dataCadastro;
     private boolean status;
 
-    public Cliente(Identificador<String> id, Classificacao classificacao, String nome) {
+    public Cliente(final Identificador<String> id, final Classificacao classificacao, final String nome) {
         validar(id.getValor(), classificacao, nome);
         this.id = id;
         this.classificacao = classificacao;
@@ -22,7 +22,7 @@ public class Cliente {
         validar(this.id.getValor(), this.classificacao, this.nome);
     }
 
-    public void alterarNome(String nome) {
+    public void alterarNome(final String nome) {
         if (nome == null || nome.trim().isEmpty()){
             throw new IllegalArgumentException("O Nome não pode ser nulo ou vazio!");
         }
@@ -57,7 +57,7 @@ public class Cliente {
         return status;
     }
 
-    private void validar(String id, Classificacao tipo, String nome) {
+    private void validar(final String id, final Classificacao tipo, final String nome) {
         if(id == null || id.isBlank()){
             throw new IllegalArgumentException("O ID não pode ser nulo ou vazio!");
         }

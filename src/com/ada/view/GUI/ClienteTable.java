@@ -1,8 +1,8 @@
 package com.ada.view.GUI;
 
 import com.ada.controller.ClienteController;
-import com.ada.model.entity.cliente.CNPJ;
-import com.ada.model.entity.cliente.CPF;
+import com.ada.model.entity.cliente.IdentificadorCNPJ;
+import com.ada.model.entity.cliente.IdentificadorCPF;
 import com.ada.model.entity.interfaces.conta.Identificador;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.entity.cliente.Cliente;
@@ -155,9 +155,9 @@ public class ClienteTable extends JFrame {
 
     private static Identificador<String> getIdentificador(Classificacao tipoCliente, String id) {
         if (tipoCliente == Classificacao.PF)
-            return new CPF(id);
+            return new IdentificadorCPF(id);
         if (tipoCliente == Classificacao.PJ)
-            return new CNPJ(id);
+            return new IdentificadorCNPJ(id);
         throw new IllegalArgumentException("Tipo de cliente inválido ou não reconhecido!");
     }
 

@@ -6,7 +6,7 @@ public enum TipoDeContaEnum {
     CONTA_INVESTIMENTO("CI");
 
     private final String sigla;
-    TipoDeContaEnum(String sigla){
+    TipoDeContaEnum(final String sigla){
         this.sigla = sigla;
     }
 

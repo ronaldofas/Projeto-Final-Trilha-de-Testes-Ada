@@ -2,22 +2,22 @@ package com.ada.model.entity.cliente;
 
 import com.ada.model.entity.interfaces.conta.Identificador;
 
-public class CNPJ implements Identificador<String> {
-    private final String CNPJ;
+public class IdentificadorCNPJ implements Identificador<String> {
+    private final String idCNPJ;
 
-    public CNPJ(String CNPJ) {
-        this.CNPJ = CNPJ;
+    public IdentificadorCNPJ(final String idCNPJ) {
+        this.idCNPJ = idCNPJ;
         validar();
     }
 
     @Override
     public String getValor() {
-        return CNPJ;
+        return idCNPJ;
     }
 
     @Override
     public void validar() {
-        if (CNPJ == null || CNPJ.length() != 14){
+        if (idCNPJ == null || idCNPJ.length() != 14){
             throw new IllegalArgumentException("O CNPJ deve possuir 14 digitos, verifique!");
         }
     }

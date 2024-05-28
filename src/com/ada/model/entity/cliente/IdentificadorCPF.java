@@ -2,25 +2,25 @@ package com.ada.model.entity.cliente;
 
 import com.ada.model.entity.interfaces.conta.Identificador;
 
-public class CPF implements Identificador<String> {
-    private final String CPF;
+public class IdentificadorCPF implements Identificador<String> {
+    private final String cpf;
 
-    public CPF(String CPF) {
-        this.CPF = CPF;
+    public IdentificadorCPF(final String cpf) {
+        this.cpf = cpf;
         this.validar();
     }
 
     @Override
     public String getValor() {
-        return CPF;
+        return cpf;
     }
 
     @Override
     public void validar() {
-        if (CPF == null || CPF.isBlank()){
+        if (cpf == null || cpf.isBlank()){
             throw new IllegalArgumentException("Preencha corretamente o CPF");
         }
-        if (CPF.length() != 11){
+        if (cpf.length() != 11){
             throw new IllegalArgumentException("CPF deve possuir 11 digitos, verifique!");
         }
     }

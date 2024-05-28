@@ -2,8 +2,8 @@ package com.ada.view.CLI;
 
 import com.ada.controller.BancoController;
 import com.ada.controller.ClienteController;
-import com.ada.model.entity.cliente.CNPJ;
-import com.ada.model.entity.cliente.CPF;
+import com.ada.model.entity.cliente.IdentificadorCNPJ;
+import com.ada.model.entity.cliente.IdentificadorCPF;
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.conta.ContaCorrente;
 import com.ada.model.entity.conta.ContaPoupanca;
@@ -384,8 +384,8 @@ public class Menu {
     }
 
     private Identificador<String> obterIdCliente(Classificacao classificacao) {
-        if (classificacao == Classificacao.PF) return new CPF(obterIdentificador());
-        if (classificacao == Classificacao.PJ) return new CNPJ(obterIdentificador());
+        if (classificacao == Classificacao.PF) return new IdentificadorCPF(obterIdentificador());
+        if (classificacao == Classificacao.PJ) return new IdentificadorCNPJ(obterIdentificador());
         throw new IllegalArgumentException("Classificação inválida!");
     }
 

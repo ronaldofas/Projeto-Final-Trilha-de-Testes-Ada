@@ -15,7 +15,7 @@ public class Transacao {
     private Cliente destinatario;
     private Cliente remetente;
 
-    public Transacao(TipoTransacao tipoTransacao, double valor) {
+    public Transacao(final TipoTransacao tipoTransacao, final double valor) {
         this.tipoTransacao = tipoTransacao;
         this.valor = valor;
         this.dataTransacao = LocalDateTime.now();
@@ -46,19 +46,19 @@ public class Transacao {
         return remetente;
     }
 
-    public void setObservacao(String observacao) {
+    public void setObservacao(final String observacao) {
         this.observacao = observacao;
     }
 
-    public void setDestinatario(Cliente destinatario) {
+    public void setDestinatario(final Cliente destinatario) {
         this.destinatario = destinatario;
     }
 
-    public void setRemetente(Cliente remetente) {
+    public void setRemetente(final Cliente remetente) {
         this.remetente = remetente;
     }
 
-    public void setDestinatarioERemetente(Cliente cliente){
+    public void setDestinatarioERemetente(final Cliente cliente){
         this.remetente =  cliente;
         this.destinatario = cliente;
     }
@@ -73,7 +73,7 @@ public class Transacao {
     @Override
     public String toString(){
         return "Data: " + formatarData() + " - Tipo transação: " + tipoTransacao.toString() +
-                " - Destinatario: " + destinatario.getNome() + String.format(" - Valor: R$ %.2f", valor)
+                " - Destinatario: " + destinatario.getNome() + String.format(" - Valor: R$ %.2f", (Object)valor)
                 + " - Observação: " + observacao;
     }
 }

@@ -9,13 +9,13 @@ public enum TipoTransacao {
     RENDIMENTO("Rendimento da conta");
 
 
-    private final String Descricao;
+    private final String descricao;
 
-    TipoTransacao(String descricao) {
-        Descricao = descricao;
+    TipoTransacao(final String descricao) {
+        this.descricao = descricao;
     }
 
     public String getDescricao() {
-        return Descricao;
+        return descricao;
     }
 }

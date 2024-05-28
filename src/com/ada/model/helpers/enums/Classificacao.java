@@ -8,7 +8,7 @@ public enum Classificacao {
     private final String tipoDocumento;
     private final int tamanhoDocumento;
 
-    Classificacao(int id, String tipoDocumento, int tamanhoDocumento) {
+    Classificacao(final int id, final String tipoDocumento, final int tamanhoDocumento) {
         this.id = id;
         this.tipoDocumento = tipoDocumento;
         this.tamanhoDocumento = tamanhoDocumento;
