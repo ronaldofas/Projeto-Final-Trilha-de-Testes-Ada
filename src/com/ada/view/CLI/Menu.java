@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
-    final BancoController bancoController;
-    final ClienteController clienteController;
+    private final BancoController bancoController;
+    private final ClienteController clienteController;
     private final Scanner ENTRADA = new Scanner(System.in);
 
-    public Menu(BancoController bancoController, ClienteController clienteController) {
+    public Menu(final BancoController bancoController, final ClienteController clienteController) {
         this.clienteController = clienteController;
         this.bancoController = bancoController;
     }
@@ -140,7 +140,8 @@ public class Menu {
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Cadastrar Cliente");
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Pesquisar Cliente por nome");
         System.out.println(this.CadeiaDeCaracteres(30, ' ') +
-                "3 - Pesquisar Cliente por identificador (CPF/CNPJ)");
+                "3 - Pesquisar Cliente por identificador (CPF/CNPJ)"
+        );
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Listar todos os clientes");
         System.out.println();
         System.out.println(this.CadeiaDeCaracteres(30, ' ') + "5 - Voltar para o menu principal");
@@ -165,7 +166,7 @@ public class Menu {
         }
     }
 
-    private static int getTentativas(int opcao, int x, int tentativas) {
+    private static int getTentativas(final int opcao, final int x, int tentativas) {
         if ((opcao > x || opcao < 1)) {
             System.out.print("Opção inválida! Escolha uma opção: ");
             tentativas++;
@@ -173,7 +174,7 @@ public class Menu {
         return tentativas;
     }
 
-    private boolean validarOpcaoMenuInicio(int opcao) {
+    private boolean validarOpcaoMenuInicio(final int opcao) {
         return switch (opcao) {
             case 1 -> {
                 this.cadastroDeClientes();
@@ -191,7 +192,9 @@ public class Menu {
         };
     }
 
-    private static void terminarLoopOuSair(int opcao, int tentativas, int maiorOpcao, boolean sair) {
+    private static void terminarLoopOuSair(
+            final int opcao, final int tentativas, final int maiorOpcao, final boolean sair
+    ) {
         if (opcao == maiorOpcao || tentativas == 3){
             if (tentativas == 3) {
                 System.out.println("Você parece indeciso, volte quando estiver preparado!");
@@ -217,7 +220,7 @@ public class Menu {
         inicio();
     }
 
-    private boolean avaliarOpcaoMenuCadastroDeClientes(int opcao) {
+    private boolean avaliarOpcaoMenuCadastroDeClientes(final int opcao) {
         return switch (opcao) {
             case 1 -> {
                 criarCliente();
@@ -265,20 +268,20 @@ public class Menu {
     }
 
     private Cliente pesquisarClientePorId() {
-        String idAhPesquisar = obterIdentificador();
+        final String idAhPesquisar = obterIdentificador();
         return clienteController.buscarClientePorIdentificador(idAhPesquisar);
     }
 
     private Cliente pesquisarClientePorNome() {
-        String nomeAhPesquisar = obterNomeDoCliente();
+        final String nomeAhPesquisar = obterNomeDoCliente();
         return clienteController.buscarClientePorNome(nomeAhPesquisar);
     }
 
     private void criarCliente() {
-        Classificacao classificacao = obterTipoDeCliente();
-        Identificador<String> id = obterIdCliente(classificacao);
-        String nomeCliente = obterNomeDoCliente();
-        Cliente cliente = new Cliente(id, classificacao, nomeCliente);
+        final Classificacao classificacao = obterTipoDeCliente();
+        final Identificador<String> id = obterIdCliente(classificacao);
+        final String nomeCliente = obterNomeDoCliente();
+        final Cliente cliente = new Cliente(id, classificacao, nomeCliente);
         clienteController.cadastrarCliente(cliente);
         System.out.println(cliente);
         aguardarRetorno();
@@ -317,7 +320,7 @@ public class Menu {
         this.inicio();
     }
 
-    private boolean validarOpcaoMenuAberturaDeContas(int opcao) {
+    private boolean validarOpcaoMenuAberturaDeContas(final int opcao) {
         return switch (opcao) {
             case 1 -> {
                 abrirContaPoupanca();
@@ -334,7 +337,7 @@ public class Menu {
     }
 
     private void abrirContaCorrente() {
-        Cliente cliente;
+        final Cliente cliente;
         try {
             cliente = pesquisarClientePorId();
         } catch (RuntimeException ex){
@@ -342,7 +345,7 @@ public class Menu {
             return;
         }
         bancoController.abrirConta(cliente, TipoDeContaEnum.CONTA_CORRENTE);
-        List<Conta> contas = bancoController.buscarContas(cliente.getIdentificador());
+        final List<Conta> contas = bancoController.buscarContas(cliente.getIdentificador());
         if (!contas.isEmpty()) {
             for (Conta conta : contas) {
                 if (conta instanceof ContaCorrente) {
@@ -355,7 +358,7 @@ public class Menu {
     }
 
     private void abrirContaPoupanca() {
-        Cliente cliente;
+        final Cliente cliente;
         try {
             cliente = pesquisarClientePorId();
         } catch (RuntimeException ex){
@@ -371,7 +374,7 @@ public class Menu {
             return;
 
         }
-        List<Conta> contas = bancoController.buscarContas(cliente.getIdentificador());
+        final List<Conta> contas = bancoController.buscarContas(cliente.getIdentificador());
         if (!contas.isEmpty()) {
             for (Conta conta : contas) {
                 if (conta instanceof ContaPoupanca) {
@@ -383,7 +386,7 @@ public class Menu {
         }
     }
 
-    private Identificador<String> obterIdCliente(Classificacao classificacao) {
+    private Identificador<String> obterIdCliente(final Classificacao classificacao) {
         if (classificacao == Classificacao.PF) return new IdentificadorCPF(obterIdentificador());
         if (classificacao == Classificacao.PJ) return new IdentificadorCNPJ(obterIdentificador());
         throw new IllegalArgumentException("Classificação inválida!");
@@ -409,7 +412,7 @@ public class Menu {
         this.inicio();
     }
 
-    private boolean validarOpcaoMenuTransacionarContas(int opcao) {
+    private boolean validarOpcaoMenuTransacionarContas(final int opcao) {
         return switch (opcao) {
             case 1 -> {
                 try{
@@ -476,7 +479,7 @@ public class Menu {
     }
 
     private void exibirTransacoes() {
-        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (conta == null)
             throw new RuntimeException("Conta não localizada.");
         for (Transacao transacao : conta.getTransacoes())
@@ -486,7 +489,7 @@ public class Menu {
     }
 
     private void investirValores() {
-        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (!(conta instanceof ContaCorrente))
             throw new RuntimeException("Investimentos só podem ser efetuados a partir de uma conta corrente");
         bancoController.investir((ContaCorrente) conta, obterValorTransacao("investido"));
@@ -495,7 +498,7 @@ public class Menu {
     }
 
     private void ConsultarSaldoConta() {
-        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (conta != null) System.out.printf("Saldo atual da conta R$ %.2f.", conta.consultarSaldo());
         else throw new RuntimeException("Conta não localizada!");
         aguardarRetorno();
@@ -503,7 +506,7 @@ public class Menu {
     }
 
     private void SacarDaConta() {
-        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (conta != null){
             try {
                 bancoController.sacar(conta, obterValorTransacao("sacado"));
@@ -517,7 +520,7 @@ public class Menu {
     }
 
     private void DepositarNaConta() {
-        Conta conta = bancoController.buscarConta(obterNumeroConta());
+        final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (conta != null)
             bancoController.depositar(conta, obterValorTransacao("depositado"));
         else throw new RuntimeException("Conta não localizada!");
@@ -528,9 +531,9 @@ public class Menu {
 
     private void transferirEntreContas() {
         System.out.println("Escolha a conta de ORIGEM: ");
-        Conta contaOrigem = bancoController.buscarConta(obterNumeroConta());
+        final Conta contaOrigem = bancoController.buscarConta(obterNumeroConta());
         System.out.println("Escolha a conta de DESTINO: ");
-        Conta contaDestino = bancoController.buscarConta(obterNumeroConta());
+        final Conta contaDestino = bancoController.buscarConta(obterNumeroConta());
         if (contaOrigem != null && contaDestino != null)
             bancoController.transferir(contaOrigem, contaDestino, obterValorTransacao("transferido"));
         else throw new RuntimeException("Uma das contas não localizadas");
@@ -550,12 +553,8 @@ public class Menu {
     }
 
     private String obterNumeroConta() {
-        String numeroConta;
-        System.out.println(
-                "Informe o número da conta, lembrando que poupança começa com (CP), \n" +
-                "corrente com (CC) e investimento com (CI) seguido de 4 digitos: ");
-        numeroConta = ENTRADA.nextLine().toUpperCase();
-        return numeroConta;
+        System.out.println("Informe o número da conta: ");
+        return String.format("%6d", Integer.parseInt(ENTRADA.nextLine())) ;
     }
 
     private String obterNomeDoCliente() {
