@@ -1,4 +1,4 @@
-package com.ada.infra.repositorios.inMemory;
+package com.ada.infra.repositorios.memory;
 
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.interfaces.banco.IClienteRepositorio;
@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteRepositorio implements IClienteRepositorio {
-    final List<Cliente> clientes;
+    private final List<Cliente> clientes;
+    private static final String MENSAGEMNAOLOCALIZADO = "Cliente não localizado!";
 
     public ClienteRepositorio() {
         this.clientes = new ArrayList<>();
     }
 
     @Override
-    public void atualizar(Cliente cliente) {
+    public void atualizar(final Cliente cliente) {
         Cliente clienteAhAtualizar = buscarPorId(cliente.getIdentificador());
         clienteAhAtualizar.alterarNome(cliente.getNome());
         if (cliente.isStatus() != clienteAhAtualizar.isStatus())
@@ -29,33 +30,33 @@ public class ClienteRepositorio implements IClienteRepositorio {
     }
 
     @Override
-    public Cliente buscarPorId(String id) {
+    public Cliente buscarPorId(final String id) {
         for (Cliente cliente : clientes){
             if (cliente.getIdentificador().equals(id))
                 return cliente;
         }
-        throw new RuntimeException("Cliente não localizado!");
+        throw new IllegalArgumentException(MENSAGEMNAOLOCALIZADO);
     }
 
     @Override
-    public void salvar(Cliente cliente) {
+    public void salvar(final Cliente cliente) {
         clientes.add(cliente);
     }
 
     @Override
-    public void excluirCliente(Cliente cliente) {
+    public void excluirCliente(final Cliente cliente) {
         if(clientes.contains(cliente))
             clientes.remove(cliente);
         else
-            throw new RuntimeException("Cliente não localizado!");
+            throw new IllegalArgumentException(MENSAGEMNAOLOCALIZADO);
     }
 
     @Override
-    public Cliente buscarPorNome(String nome) {
+    public Cliente buscarPorNome(final String nome) {
         for (Cliente cliente : clientes){
             if (cliente.getNome().contains(nome))
                 return cliente;
         }
-        throw new RuntimeException("Cliente não localizado!");
+        throw new IllegalArgumentException(MENSAGEMNAOLOCALIZADO);
     }
 }

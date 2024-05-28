@@ -1,4 +1,4 @@
-package com.ada.infra.repositorios.inMemory;
+package com.ada.infra.repositorios.memory;
 
 import com.ada.model.entity.conta.ContaInvestimento;
 import com.ada.model.entity.interfaces.banco.IContaRepositorio;
@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContaRepositorio implements IContaRepositorio {
-    final List<Conta> contas;
+    private final List<Conta> contas;
 
     public ContaRepositorio() {
         this.contas = new ArrayList<>();
     }
 
     @Override
-    public void atualizar(Conta conta) {
+    public void atualizar(final Conta conta) {
         Conta contaAhAtualizar = buscarPorNumero(conta.getNumero());
         if (contaAhAtualizar.isStatus() != conta.isStatus())
             contaAhAtualizar.ativarDesativar();
@@ -29,7 +29,7 @@ public class ContaRepositorio implements IContaRepositorio {
     }
 
     @Override
-    public List<Conta> buscarContas(String identificador) {
+    public List<Conta> buscarContas(final String identificador) {
         List<Conta> contasLocalizadas = new ArrayList<>();
         for (Conta conta : contas){
             if (conta.getCliente().getIdentificador().equals(identificador))
@@ -39,26 +39,26 @@ public class ContaRepositorio implements IContaRepositorio {
     }
 
     @Override
-    public Conta buscarPorNumero(String numero) {
+    public Conta buscarPorNumero(final String numero) {
         for (Conta conta : contas) {
             if (conta.getNumero().equals(numero))
                 return conta;
         }
-        throw new RuntimeException("Conta não localizada!");
+        throw new IllegalArgumentException("Conta não localizada!");
     }
 
     @Override
-    public void salvar(Conta conta) {
+    public void salvar(final Conta conta) {
         contas.add(conta);
     }
 
     @Override
-    public void removerConta(Conta conta) {
+    public void removerConta(final Conta conta) {
         contas.remove(conta);
     }
 
     @Override
-    public Conta buscarContaInvestimento(String id) {
+    public Conta buscarContaInvestimento(final String id) {
         Conta resultado = null;
         for (Conta conta : contas){
             if (conta instanceof ContaInvestimento &&

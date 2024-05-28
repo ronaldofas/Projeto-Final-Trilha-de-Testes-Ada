@@ -2,8 +2,8 @@ package com.ada;
 
 import com.ada.controller.BancoController;
 import com.ada.controller.ClienteController;
-import com.ada.infra.repositorios.inMemory.ClienteRepositorio;
-import com.ada.infra.repositorios.inMemory.ContaRepositorio;
+import com.ada.infra.repositorios.memory.ClienteRepositorio;
+import com.ada.infra.repositorios.memory.ContaRepositorio;
 import com.ada.view.CLI.Menu;
 import com.ada.view.GUI.TelaInicial;
 
