@@ -1,11 +1,10 @@
-package com.ada.view.GUI;
+package com.ada.view.gui;
 
 import com.ada.controller.BancoController;
 import com.ada.model.entity.conta.ContaCorrente;
 import com.ada.model.entity.conta.Transacao;
 import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
-import com.ada.view.GUI.model.TransacaoModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,17 +13,25 @@ import java.util.List;
 
 public class TelaTransacoes extends JFrame {
 
-    private JPanel painelPrincipal, aba1, aba2, aba3, aba4, aba5, aba6;
-    private JComboBox<TipoDeContaEnum> tipoContaComboBox;
-    private JTextField numeroContaTextField, valorSaqueTextField, valorDepositoTextField;
-    private JButton sacarButton, depositarButton, consultarSaldoButton;
+    private JPanel painelPrincipal;
+    private JPanel aba1;
+    private JPanel aba2;
+    private JPanel aba3;
+    private JPanel aba4;
+    private JPanel aba5;
+    private JPanel aba6;
+    private JTextField numeroContaTextField;
+    private JTextField valorSaqueTextField;
+    private JTextField valorDepositoTextField;
+    private JButton sacarButton;
+    private JButton depositarButton;
+    private JButton consultarSaldoButton;
     private JTabbedPane painelComAbas;
     private final BancoController banco;
-    private TransacaoModel transacaoModel;
-    private JTable tabelaTransacoes;
     private List<Transacao> transacoes;
-    private JScrollPane scrollPane, scrollDoTexto;
+    private JScrollPane scrollDoTexto;
     private JTextArea textoLongo;
+    private static final String TXT_ERRO_PREENCHIMENTO = "Erro, preencha corretamente o número da conta!";
 
     public TelaTransacoes(BancoController banco) {
         super("Transações Bancárias");
@@ -54,7 +61,6 @@ public class TelaTransacoes extends JFrame {
 
         criaObjetosAba5();
 
-        // criarTabela();
         criarTextoEscrolavel();
 
         criaObjetosAba6();
@@ -71,16 +77,11 @@ public class TelaTransacoes extends JFrame {
         consultarSaldoButton.addActionListener(e -> {
             // Validar os dados
             String idConta = obterIdFormatado();
-            TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             Conta conta = banco.buscarConta(idConta);
             double saldo;
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
-                JOptionPane
-                        .showMessageDialog(
-                                null,
-                                "Erro, preencha corretamento o número da conta!"
-                        );
+                JOptionPane.showMessageDialog(null, TXT_ERRO_PREENCHIMENTO);
             } else {
                 // Efetuar saque
                 saldo = conta.consultarSaldo();
@@ -98,11 +99,7 @@ public class TelaTransacoes extends JFrame {
             Conta conta = banco.buscarConta(idConta);
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
-                JOptionPane
-                        .showMessageDialog(
-                                null,
-                                "Erro, preencha corretamento o número da conta!"
-                        );
+                JOptionPane.showMessageDialog(null, TXT_ERRO_PREENCHIMENTO);
             } else {
                 if (valorDeposito.isBlank() || valorDeposito.isEmpty())
                     JOptionPane
@@ -110,7 +107,6 @@ public class TelaTransacoes extends JFrame {
                                     null, "É necessário preencher o valor a depositar!");
                 else {
                     // Efetuar saque
-                    double valorDepositado = 0;
                     try {
                         conta.depositar(Double.parseDouble(valorDeposito));
                         JOptionPane.showMessageDialog(null, "Depósito efetuado com sucesso");
@@ -132,16 +128,11 @@ public class TelaTransacoes extends JFrame {
         sacarButton.addActionListener(e -> {
             // Validar os dados
             String idConta = obterIdFormatado();
-            TipoDeContaEnum tipoConta = (TipoDeContaEnum) tipoContaComboBox.getSelectedItem();
             String valorSaque = valorSaqueTextField.getText();
             Conta conta = banco.buscarConta(idConta);
 
             if ((idConta.isBlank() || idConta.isEmpty()) ){
-                JOptionPane
-                        .showMessageDialog(
-                                null,
-                                "Erro, preencha corretamento o número da conta!"
-                        );
+                JOptionPane.showMessageDialog(null, TXT_ERRO_PREENCHIMENTO);
             } else {
                 if (valorSaque.isBlank() || valorSaque.isEmpty())
                     JOptionPane
@@ -177,27 +168,22 @@ public class TelaTransacoes extends JFrame {
         extratoButton.addActionListener(e -> {
             Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
             transacoes = contaOrigem.getTransacoes();
-            // transacaoModel.atualizarTransacoes(transacoes);
-            // transacaoModel.fireTableDataChanged();
-            String extratoPronto = "";
-            extratoPronto = " Extrato da Conta n° " + contaOrigem.getNumero();
-            extratoPronto += "\n Cliente: " + contaOrigem.getCliente().getNome();
-            extratoPronto += "\n";
-            extratoPronto += "\n Data - Tipo transação  - Destinatario - Valor - Observação";
-            for (Transacao t : transacoes){
-                extratoPronto += "\n" + t.toString();
+            StringBuilder extratoPronto = new StringBuilder();
+            extratoPronto.append(" Extrato da Conta n° ");
+            extratoPronto.append(contaOrigem.getNumero());
+            extratoPronto.append("\n Cliente: ");
+            extratoPronto.append(contaOrigem.getCliente().getNome());
+            extratoPronto.append("\n");
+            extratoPronto.append("\n Data - Tipo transação  - Destinatario - Valor - Observação");
+            for (Transacao transacao : transacoes){
+                extratoPronto.append("\n");
+                extratoPronto.append(transacao.toString());
             }
-            extratoPronto += "\n\nSaldo: " + contaOrigem.consultarSaldo();
+            extratoPronto.append("\n\nSaldo: ");
+            extratoPronto.append(contaOrigem.consultarSaldo());
             textoLongo.setText("");
-            textoLongo.setText(extratoPronto);
+            textoLongo.setText(extratoPronto.toString());
         });
-    }
-
-    private void criarTabela() {
-        transacaoModel = new TransacaoModel(transacoes);
-        tabelaTransacoes = new JTable(transacaoModel);
-        scrollPane = new JScrollPane(tabelaTransacoes);
-        transacaoModel.atualizarTransacoes(transacoes);
     }
 
     private void criarTextoEscrolavel(){
@@ -238,7 +224,7 @@ public class TelaTransacoes extends JFrame {
                 double valorTransacao = Double.parseDouble(valorAhTransferirCapturado);
                 Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
                 if (!(contaOrigem instanceof ContaCorrente))
-                    throw new RuntimeException(
+                    throw new IllegalArgumentException(
                             "Investimentos só podem ser efetuados a partir de uma conta corrente");
                 this.banco.investir((ContaCorrente) contaOrigem, valorTransacao);
 
@@ -425,6 +411,7 @@ public class TelaTransacoes extends JFrame {
     }
 
     private void configuraLinhaUmDaJanela() {
+        JComboBox<TipoDeContaEnum> tipoContaComboBox;
         // Rótulo "Tipo da conta"
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1; // coluna2
@@ -450,7 +437,7 @@ public class TelaTransacoes extends JFrame {
     private void configurarAhTela() {
         // Configurações da tela
         setSize(1024, 768);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
     }
 

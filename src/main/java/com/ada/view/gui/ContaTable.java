@@ -1,11 +1,11 @@
-package com.ada.view.GUI;
+package com.ada.view.gui;
 
 import com.ada.controller.BancoController;
 import com.ada.controller.ClienteController;
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
-import com.ada.view.GUI.model.ContaTableModel;
+import com.ada.view.gui.model.ContaTableModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,7 @@ public class ContaTable extends JFrame {
         // Configurações da Janela
         setTitle("Contas");
         setSize(600, 400);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.banco = banco;
         this.cliente = cliente;
         contas = new ArrayList<>();
@@ -58,8 +58,6 @@ public class ContaTable extends JFrame {
     }
 
     private void obterContas() {
-        //this.contas.clear();
-
         this.contas = this.banco.listarTodasAsContas();
     }
 
@@ -141,7 +139,7 @@ public class ContaTable extends JFrame {
                         JOptionPane.showMessageDialog(
                                 null, "Erro ao abrir conta:\n" + ex.getMessage());
                     }
-                } else throw new RuntimeException("Tipo de conta inválido ou não preenchido!");
+                } else throw new IllegalArgumentException("Tipo de conta inválido ou não preenchido!");
 
                 // Atualizar a tabela
                 obterContas();

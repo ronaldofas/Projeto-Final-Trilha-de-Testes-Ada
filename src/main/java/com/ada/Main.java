@@ -4,8 +4,8 @@ import com.ada.controller.BancoController;
 import com.ada.controller.ClienteController;
 import com.ada.infra.repositorios.memory.ClienteRepositorio;
 import com.ada.infra.repositorios.memory.ContaRepositorio;
-import com.ada.view.CLI.Menu;
-import com.ada.view.GUI.TelaInicial;
+import com.ada.view.cli.Menu;
+import com.ada.view.gui.TelaInicial;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,7 +16,7 @@ public class Main {
         // Crie as funcionalidades: sacar, depositar, consultar saldo.
 
         // Cria o Menu
-        boolean gui = true;
+        boolean gui = false;
         final ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
         final ContaRepositorio contaRepositorio = new ContaRepositorio();
         final BancoController banco = new BancoController(contaRepositorio);

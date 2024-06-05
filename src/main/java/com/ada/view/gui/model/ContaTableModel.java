@@ -1,4 +1,4 @@
-package com.ada.view.GUI.model;
+package com.ada.view.gui.model;
 
 
 import com.ada.model.entity.conta.ContaCorrente;

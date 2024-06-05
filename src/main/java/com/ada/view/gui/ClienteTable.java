@@ -1,4 +1,4 @@
-package com.ada.view.GUI;
+package com.ada.view.gui;
 
 import com.ada.controller.ClienteController;
 import com.ada.model.entity.cliente.IdentificadorCNPJ;
@@ -6,7 +6,7 @@ import com.ada.model.entity.cliente.IdentificadorCPF;
 import com.ada.model.entity.interfaces.conta.Identificador;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.entity.cliente.Cliente;
-import com.ada.view.GUI.model.ClienteTableModel;
+import com.ada.view.gui.model.ClienteTableModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,7 @@ public class ClienteTable extends JFrame {
         // Configurações da Janela
         setTitle("Clientes");
         setSize(600, 400);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.cliente = cliente;
         clientes = this.cliente.listarClientes();
 

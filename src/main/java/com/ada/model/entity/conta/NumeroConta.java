@@ -3,23 +3,16 @@ package com.ada.model.entity.conta;
 import com.ada.model.entity.interfaces.conta.Identificador;
 
 public class NumeroConta implements Identificador<String> {
-    private static int numeroIncremental = 0;
-    private final String numeroConta;
+    private final String numeroDaConta;
 
     public NumeroConta(final String numeroConta) {
-        this.numeroConta = numeroConta;
-        validar();
-    }
-
-    public NumeroConta(){
-        numeroIncremental++;
-        this.numeroConta = String.format("%06d", numeroIncremental);
+        this.numeroDaConta = numeroConta;
         validar();
     }
 
     @Override
     public void validar() {
-        if (numeroConta == null || numeroConta.length() != 6){
+        if (numeroDaConta == null || numeroDaConta.length() != 6){
             throw new IllegalArgumentException(
                     "Número da conta deve possuir 6 digitos, incluíndo zeros a esquerda");
         }
@@ -27,6 +20,6 @@ public class NumeroConta implements Identificador<String> {
 
     @Override
     public String getValor() {
-        return numeroConta;
+        return numeroDaConta;
     }
 }
