@@ -1,4 +1,4 @@
-package com.ada.view.cli;
+package com.ada.view.CLI;
 
 import com.ada.controller.BancoController;
 import com.ada.controller.ClienteController;
@@ -12,49 +12,46 @@ import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.entity.interfaces.conta.Identificador;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.helpers.enums.TipoDeContaEnum;
+import com.ada.model.helpers.services.ScannerHelper;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
 
 public class Menu {
     private final BancoController bancoController;
     private final ClienteController clienteController;
-    private static final Scanner entrada = new Scanner(System.in);
-    private static final String TXT_SELECIONAR_OPCAO = "Selecione uma opção: ";
-    private static final String TXT_DIGITAR_OPCAO = "Digite uma opção: ";
-    private static final String TXT_NAO_LOCALIZADA = "Conta não localizada!";
 
     public Menu(final BancoController bancoController, final ClienteController clienteController) {
         this.clienteController = clienteController;
         this.bancoController = bancoController;
     }
 
-    public void exibirMenuInicial() {
-        this.limparTela();
-        this.imprimirCabecalho();
-        this.imprimirCorpoDoMenu();
+    public void ExibirMenuInicial() {
+        this.LimparTela();
+        this.ImprimirCabecalho();
+        this.ImprimirCorpoDoMenu();
     }
 
-    public void exibirTelaDeAberturaDeConta(){
-        this.limparTela();
-        this.imprimirCabecalho();
-        this.imprimirCorpoAberturaDeConta();
+    public void ExibirTelaDeAberturaDeConta(){
+        this.LimparTela();
+        this.ImprimirCabecalho();
+        this.ImprimirCorpoAberturaDeConta();
     }
 
-    public void exibirTelaDeTransacoesDeConta(){
-        this.limparTela();
-        this.imprimirCabecalho();
-        this.imprimirCorpoTransacoesDeConta();
+    public void ExibirTelaDeTransacoesDeConta(){
+        this.LimparTela();
+        this.ImprimirCabecalho();
+        this.ImprimirCorpoTransacoesDeConta();
     }
 
-    private void limparTela() {
+    private void LimparTela() {
         if (System.getProperty("os.name").contains("Windows")) {
             try {
+                //new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
                 String[] command = new String[]{"cls"};
                 Runtime.getRuntime().exec(command);
             } catch (IOException e) {
-                throw new IllegalArgumentException(e);
+                throw new RuntimeException(e);
             }
         }
         else {
@@ -62,95 +59,94 @@ public class Menu {
                 String[] command = new String[]{"clear"};
                 Runtime.getRuntime().exec(command);
             } catch (IOException e) {
-                throw new IllegalArgumentException(e);
+                throw new RuntimeException(e);
             }
         }
     }
 
-    private void imprimirCabecalho() {
-        System.out.println(this.cadeiaDeCaracteres(80, '='));
+    private void ImprimirCabecalho() {
+        System.out.println(this.CadeiaDeCaracteres(80, '='));
         System.out.println(
-                this.cadeiaDeCaracteres(29, ' ') + "Caixa Econômica Federal"
-                + this.cadeiaDeCaracteres(28, ' '));
-        System.out.println(this.cadeiaDeCaracteres(80, '='));
+                this.CadeiaDeCaracteres(29, ' ') + "Caixa Econômica Federal"
+                + this.CadeiaDeCaracteres(28, ' '));
+        System.out.println(this.CadeiaDeCaracteres(80, '='));
     }
 
-    private String cadeiaDeCaracteres(int quantidade, char caracter){
-        return String.valueOf(caracter).repeat(Math.max(0, quantidade));
+    private String CadeiaDeCaracteres(int qtde, char caracter){
+        return String.valueOf(caracter).repeat(Math.max(0, qtde));
     }
 
-    private void imprimirCorpoDoMenu(){
+    private void ImprimirCorpoDoMenu(){
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "Operações de Conta: ");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Operações de Conta: ");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + TXT_SELECIONAR_OPCAO);
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Selecione uma opção: ");
         System.out.println();
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "1 - Cadastro de Clientes");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "2 - Abertura de conta");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "3 - Transações de conta");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Cadastro de Clientes");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Abertura de conta");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Transações de conta");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "4 - Sair da aplicação");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Sair da aplicação");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(80, '='));
-        System.out.print(this.cadeiaDeCaracteres(30, ' ') + TXT_DIGITAR_OPCAO);
+        System.out.println(this.CadeiaDeCaracteres(80, '='));
+        System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
     }
 
-    private void imprimirCorpoAberturaDeConta(){
-        // TODO: Criar opção de listar todas as contas.
+    private void ImprimirCorpoAberturaDeConta(){
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "Operações de Conta");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Operações de Conta");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + TXT_SELECIONAR_OPCAO);
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Selecione uma opção: ");
         System.out.println();
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "1 - Abrir conta poupança");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "2 - Abrir conta corrente");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Abrir conta poupança");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Abrir conta corrente");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "3 - Voltar para o menu principal");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Voltar para o menu principal");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(80, '='));
-        System.out.print(this.cadeiaDeCaracteres(30, ' ') + TXT_DIGITAR_OPCAO);
+        System.out.println(this.CadeiaDeCaracteres(80, '='));
+        System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
     }
 
-    private void imprimirCorpoTransacoesDeConta(){
+    private void ImprimirCorpoTransacoesDeConta(){
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "Transações de Conta");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Transações de Conta");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + TXT_SELECIONAR_OPCAO);
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Selecione uma opção: ");
         System.out.println();
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "1 - Depositar");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "2 - Sacar");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "3 - Consultar saldo");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "4 - Transferir");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "5 - Investir");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "6 - Exibir Extrato");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Depositar");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Sacar");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "3 - Consultar saldo");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Transferir");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "5 - Investir");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "6 - Exibir Extrato");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "7 - Voltar para o menu principal");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "7 - Voltar para o menu principal");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(80, '='));
-        System.out.print(this.cadeiaDeCaracteres(30, ' ') + TXT_DIGITAR_OPCAO);
+        System.out.println(this.CadeiaDeCaracteres(80, '='));
+        System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
     }
 
-    public void imprimirCorpoDeCadastroDeCliente(){
+    public void ImprimirCorpoDeCadastroDeCliente(){
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "Cadastro de Clientes");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Cadastro de Clientes");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + TXT_SELECIONAR_OPCAO);
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "Selecione uma opção: ");
         System.out.println();
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "1 - Cadastrar Cliente");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "2 - Pesquisar Cliente por nome");
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') +
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "1 - Cadastrar Cliente");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "2 - Pesquisar Cliente por nome");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') +
                 "3 - Pesquisar Cliente por identificador (CPF/CNPJ)"
         );
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "4 - Listar todos os clientes");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "4 - Listar todos os clientes");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "5 - Voltar para o menu principal");
+        System.out.println(this.CadeiaDeCaracteres(30, ' ') + "5 - Voltar para o menu principal");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(80, '='));
-        System.out.print(this.cadeiaDeCaracteres(30, ' ') + TXT_DIGITAR_OPCAO);
+        System.out.println(this.CadeiaDeCaracteres(80, '='));
+        System.out.print(this.CadeiaDeCaracteres(30, ' ') + "Digite a opção: ");
     }
 
 
@@ -158,10 +154,10 @@ public class Menu {
         int opcao;
         int tentativas = 0;
         boolean fecharMenu = false;
-        exibirMenuInicial();
+        ExibirMenuInicial();
         while(!fecharMenu){
-            opcao = entrada.nextInt();
-            clearBuffer();
+            opcao = ScannerHelper.obterDigitacaoDeInteiro();
+            ScannerHelper.limparBuffer();
             tentativas = getTentativas(opcao, 4, tentativas);
             fecharMenu = validarOpcaoMenuInicio(opcao);
 
@@ -213,10 +209,10 @@ public class Menu {
         int opcao;
         int tentativas = 0;
         boolean fecharMenu = false;
-        imprimirCorpoDeCadastroDeCliente();
+        ImprimirCorpoDeCadastroDeCliente();
         while (!fecharMenu){
-            opcao = entrada.nextInt();
-            clearBuffer();
+            opcao = ScannerHelper.obterDigitacaoDeInteiro();
+            ScannerHelper.limparBuffer();
             tentativas = getTentativas(opcao, 5, tentativas);
             fecharMenu = avaliarOpcaoMenuCadastroDeClientes(opcao);
         }
@@ -296,8 +292,8 @@ public class Menu {
 
         while (!escolhaEfetuada){
             System.out.println("Digite 1 - Pessoa Física (PF) ou 2 - Pessoa Jurídica (PJ): ");
-            opcao = entrada.nextInt();
-            clearBuffer();
+            opcao = ScannerHelper.obterDigitacaoDeInteiro();
+            ScannerHelper.limparBuffer();
             if (opcao > 0 && opcao <= 2) escolhaEfetuada = true;
         }
 
@@ -312,10 +308,10 @@ public class Menu {
         int opcao;
         int tentativas = 0;
         boolean fecharMenu = false;
-        exibirTelaDeAberturaDeConta();
+        ExibirTelaDeAberturaDeConta();
         while (!fecharMenu){
-            opcao = entrada.nextInt();
-            clearBuffer();
+            opcao = ScannerHelper.obterDigitacaoDeInteiro();
+            ScannerHelper.limparBuffer();
             tentativas = getTentativas(opcao, 3, tentativas);
             fecharMenu = validarOpcaoMenuAberturaDeContas(opcao);
             terminarLoopOuSair(opcao, tentativas, 3, false);
@@ -397,17 +393,17 @@ public class Menu {
 
     private String obterIdentificador() {
         System.out.println("Digite o identificador: ");
-        return entrada.nextLine();
+        return ScannerHelper.obterDigitacaoDeString();
     }
 
     public void transacionarContas(){
         int opcao;
         int quebrar = 0;
         boolean fecharMenu = false;
-        exibirTelaDeTransacoesDeConta();
+        ExibirTelaDeTransacoesDeConta();
         while (!fecharMenu){
-            opcao = entrada.nextInt();
-            clearBuffer();
+            opcao = ScannerHelper.obterDigitacaoDeInteiro();
+            ScannerHelper.limparBuffer();
             quebrar = getTentativas(opcao, 7, quebrar);
             fecharMenu = validarOpcaoMenuTransacionarContas(opcao);
             terminarLoopOuSair(opcao, quebrar, 4, false);
@@ -419,7 +415,7 @@ public class Menu {
         return switch (opcao) {
             case 1 -> {
                 try{
-                    depositarNaConta();
+                    DepositarNaConta();
                 } catch (RuntimeException ex){
                     System.out.println(ex.getMessage());
                     aguardarRetorno();
@@ -429,7 +425,7 @@ public class Menu {
             }
             case 2 -> {
                 try {
-                    sacarDaConta();
+                    SacarDaConta();
                 } catch (RuntimeException e){
                     System.out.println(e.getMessage());
                     aguardarRetorno();
@@ -439,7 +435,7 @@ public class Menu {
             }
             case 3 -> {
                 try {
-                    consultarSaldoConta();
+                    ConsultarSaldoConta();
                 } catch (RuntimeException e){
                     System.out.println(e.getMessage());
                     aguardarRetorno();
@@ -484,7 +480,7 @@ public class Menu {
     private void exibirTransacoes() {
         final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (conta == null)
-            throw new IllegalArgumentException("Conta não localizada.");
+            throw new RuntimeException("Conta não localizada.");
         for (Transacao transacao : conta.getTransacoes())
             System.out.println(transacao.toString());
         aguardarRetorno();
@@ -494,21 +490,21 @@ public class Menu {
     private void investirValores() {
         final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (!(conta instanceof ContaCorrente))
-            throw new IllegalArgumentException("Investimentos só podem ser efetuados a partir de uma conta corrente");
+            throw new RuntimeException("Investimentos só podem ser efetuados a partir de uma conta corrente");
         bancoController.investir((ContaCorrente) conta, obterValorTransacao("investido"));
         aguardarRetorno();
         transacionarContas();
     }
 
-    private void consultarSaldoConta() {
+    private void ConsultarSaldoConta() {
         final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (conta != null) System.out.printf("Saldo atual da conta R$ %.2f.", conta.consultarSaldo());
-        else throw new IllegalArgumentException(TXT_NAO_LOCALIZADA);
+        else throw new RuntimeException("Conta não localizada!");
         aguardarRetorno();
         transacionarContas();
     }
 
-    private void sacarDaConta() {
+    private void SacarDaConta() {
         final Conta conta = bancoController.buscarConta(obterNumeroConta());
         if (conta != null){
             try {
@@ -516,18 +512,19 @@ public class Menu {
             } catch (Exception e){
                 System.out.print("Não foi possível efetuar o saque. " + e.getLocalizedMessage());
             }
-        } else throw new IllegalArgumentException(TXT_NAO_LOCALIZADA);
-        clearBuffer();
+        } else throw new RuntimeException("Conta não localizada!");
+        ScannerHelper.limparBuffer();
         aguardarRetorno();
         transacionarContas();
     }
 
-    private void depositarNaConta() {
-        final Conta conta = bancoController.buscarConta(obterNumeroConta());
+    private void DepositarNaConta() {
+        var numero = obterNumeroConta();
+        final Conta conta = bancoController.buscarConta(numero);
         if (conta != null)
             bancoController.depositar(conta, obterValorTransacao("depositado"));
-        else throw new IllegalArgumentException(TXT_NAO_LOCALIZADA);
-        clearBuffer();
+        else throw new RuntimeException("Conta não localizada!");
+        ScannerHelper.limparBuffer();
         aguardarRetorno();
         transacionarContas();
     }
@@ -539,35 +536,29 @@ public class Menu {
         final Conta contaDestino = bancoController.buscarConta(obterNumeroConta());
         if (contaOrigem != null && contaDestino != null)
             bancoController.transferir(contaOrigem, contaDestino, obterValorTransacao("transferido"));
-        else throw new IllegalArgumentException("Uma das contas não localizadas");
-        clearBuffer();
+        else throw new RuntimeException("Uma das contas não localizadas");
+        ScannerHelper.limparBuffer();
         aguardarRetorno();
         transacionarContas();
     }
 
     private void aguardarRetorno() {
         System.out.println("Pressione enter para voltar ao menu: ");
-        entrada.nextLine();
+        ScannerHelper.obterDigitacaoDeString();
     }
 
     private double obterValorTransacao(String transacao) {
         System.out.printf("Informe o valor a ser %s: ", transacao);
-        return entrada.nextDouble();
+        return ScannerHelper.obterDigitacaoDeDouble();
     }
 
     private String obterNumeroConta() {
         System.out.println("Informe o número da conta: ");
-        return String.format("%06d", Integer.parseInt(entrada.nextLine())) ;
+        return String.format("%06d", ScannerHelper.obterDigitacaoDeInteiro()) ;
     }
 
     private String obterNomeDoCliente() {
         System.out.println("Digite o seu nome: ");
-        return entrada.nextLine();
-    }
-
-    private static void clearBuffer() {
-        if (Menu.entrada.hasNextLine()) {
-            Menu.entrada.nextLine();
-        }
+        return ScannerHelper.obterDigitacaoDeString();
     }
 }
