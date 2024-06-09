@@ -2,12 +2,13 @@ package com.ada.model.entity.conta;
 
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.interfaces.conta.Conta;
+import com.ada.model.helpers.services.DateTimeHelpers;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ContaInvestimento implements Conta {
-    private static int numero;
 
     private boolean status;
     private final Cliente cliente;
@@ -17,8 +18,7 @@ public class ContaInvestimento implements Conta {
     private final List<Transacao> transacoes;
 
     public ContaInvestimento(final Cliente cliente) {
-        numero++;
-        numeroConta = new NumeroConta(String.format("%06d", numero));
+        numeroConta = new NumeroConta();
         this.cliente = cliente;
         saldo = 0;
         status = true;
@@ -93,5 +93,14 @@ public class ContaInvestimento implements Conta {
         if (valor > saldo && saque){
             throw new IllegalArgumentException("Valor maior que o saldo disponível!");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ContaInvestimento{" +
+                numeroConta.toString() +
+                ", dataAtualizacao=" + DateTimeHelpers.obterDataNoPadraoBrasileiro( dataAtualizacao) +
+                ", status=" + (status ? "Ativa" : "Inativa") +
+                '}';
     }
 }

@@ -106,8 +106,9 @@ public class Menu {
         System.out.println();
         System.out.println(this.cadeiaDeCaracteres(30, ' ') + "1 - Abrir conta poupança");
         System.out.println(this.cadeiaDeCaracteres(30, ' ') + "2 - Abrir conta corrente");
+        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "3 - Listar contas abertas");
         System.out.println();
-        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "3 - Voltar para o menu principal");
+        System.out.println(this.cadeiaDeCaracteres(30, ' ') + "4 - Voltar para o menu principal");
         System.out.println();
         System.out.println(this.cadeiaDeCaracteres(80, '='));
         System.out.print(this.cadeiaDeCaracteres(30, ' ') + TXT_DIGITAR_OPCAO);
@@ -296,15 +297,17 @@ public class Menu {
 
         while (!escolhaEfetuada){
             System.out.println("Digite 1 - Pessoa Física (PF) ou 2 - Pessoa Jurídica (PJ): ");
-            opcao = entrada.nextInt();
-            clearBuffer();
-            if (opcao > 0 && opcao <= 2) escolhaEfetuada = true;
+            String textoEscolha = entrada.nextLine();
+            if (textoEscolha.length() == 1){
+                opcao = Character.getNumericValue(textoEscolha.charAt(0));
+                if (opcao > 0 && opcao <= 2) escolhaEfetuada = true;
+            }
         }
 
         return switch (opcao){
             case 1 -> Classificacao.PF;
             case 2 -> Classificacao.PJ;
-            default -> throw new IllegalStateException("Unexpected value: " + opcao);
+            default -> throw new IllegalStateException("Valor inválido: " + opcao);
         };
     }
 
@@ -335,8 +338,21 @@ public class Menu {
                 aberturaDeContas();
                 yield false;
             }
+            case 3 -> {
+                listarContasAbertas();
+                aberturaDeContas();
+                yield false;
+            }
             default -> true;
         };
+    }
+
+    private void listarContasAbertas() {
+
+        for (Conta conta : bancoController.listarTodasAsContas()){
+            System.out.println(conta.toString());
+        }
+        aguardarRetorno();
     }
 
     private void abrirContaCorrente() {

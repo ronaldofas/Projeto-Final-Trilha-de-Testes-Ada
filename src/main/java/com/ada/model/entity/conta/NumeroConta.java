@@ -3,10 +3,12 @@ package com.ada.model.entity.conta;
 import com.ada.model.entity.interfaces.conta.Identificador;
 
 public class NumeroConta implements Identificador<String> {
+    private static int numeroIncremental = 0;
     private final String numeroDaConta;
 
-    public NumeroConta(final String numeroConta) {
-        this.numeroDaConta = numeroConta;
+    public NumeroConta() {
+        numeroIncremental++;
+        this.numeroDaConta = String.format("%06d", numeroIncremental);
         validar();
     }
 
@@ -21,5 +23,12 @@ public class NumeroConta implements Identificador<String> {
     @Override
     public String getValor() {
         return numeroDaConta;
+    }
+
+    @Override
+    public String toString() {
+        return "NumeroConta{" +
+                "numeroDaConta='" + numeroDaConta + '\'' +
+                '}';
     }
 }

@@ -5,6 +5,7 @@ import com.ada.model.entity.interfaces.conta.ContaTarifavel;
 import com.ada.model.entity.interfaces.conta.Identificador;
 import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.Classificacao;
+import com.ada.model.helpers.services.DateTimeHelpers;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.List;
 
 public class ContaCorrente implements ContaTarifavel {
 
-    private static int numero = 0;
     private boolean status;
     private final Cliente cliente;
     private final Identificador<String> numeroConta;
@@ -24,9 +24,8 @@ public class ContaCorrente implements ContaTarifavel {
     protected static final double TAXADESAQUEPJ = 0.005;
 
     public ContaCorrente(final Cliente cliente) {
-        numero++;
         this.cliente = cliente;
-        this.numeroConta = new NumeroConta(String.format("%06d", numero));
+        this.numeroConta = new NumeroConta();
         status = true;
         saldo = 0;
         dataAtualizacao = LocalDateTime.now();
@@ -113,5 +112,14 @@ public class ContaCorrente implements ContaTarifavel {
         if (valor > saldo && saque){
             throw new IllegalArgumentException("Valor maior que o saldo disponível!");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ContaCorrente{" +
+                numeroConta.toString() +
+                ", dataAtualizacao=" + DateTimeHelpers.obterDataNoPadraoBrasileiro(dataAtualizacao) +
+                ", status=" + (status ? "Ativa" : "Inativa") +
+                '}';
     }
 }

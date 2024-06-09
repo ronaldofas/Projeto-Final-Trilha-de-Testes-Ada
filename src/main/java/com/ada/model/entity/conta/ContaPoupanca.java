@@ -7,6 +7,7 @@ import com.ada.model.entity.interfaces.conta.Identificador;
 import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.helpers.services.ArredondamentoDouble;
+import com.ada.model.helpers.services.DateTimeHelpers;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.util.List;
 
 public class ContaPoupanca implements ContaRentavel {
 
-    private static int numero = 0;
     private final List<Transacao> transacoes;
     private final LocalDateTime dataAtualizacao;
     private double saldo;
@@ -25,8 +25,7 @@ public class ContaPoupanca implements ContaRentavel {
 
     public ContaPoupanca(final Cliente cliente) {
         validarCliente(cliente);
-        numero++;
-        this.numeroConta = new NumeroConta(String.format("%06d", numero));
+        this.numeroConta = new NumeroConta();
         this.cliente = cliente;
         transacoes = new ArrayList<>();
         dataAtualizacao = LocalDateTime.now();
@@ -120,5 +119,14 @@ public class ContaPoupanca implements ContaRentavel {
     @Override
     public double calcularRendimento(final double valorDoDeposito) {
         return valorDoDeposito * TAXARENDIMENTO;
+    }
+
+    @Override
+    public String toString() {
+        return "ContaPoupanca{" +
+                numeroConta.toString() +
+                ", dataAtualizacao=" + DateTimeHelpers.obterDataNoPadraoBrasileiro(dataAtualizacao) +
+                ", status=" + (status ? "Ativa" : "Inativa") +
+                '}';
     }
 }
