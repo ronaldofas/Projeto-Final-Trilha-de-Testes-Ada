@@ -29,7 +29,7 @@ public class ContaTable extends JFrame {
     public ContaTable(final BancoController banco, final ClienteController cliente) {
         // Configurações da Janela
         setTitle("Contas");
-        setSize(600, 400);
+        setSize(GuiParameters.getTabelaLargura(), GuiParameters.getTabelaAltura());
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.banco = banco;
         this.cliente = cliente;
@@ -77,33 +77,33 @@ public class ContaTable extends JFrame {
     }
 
     private void organizaQuartaLinhaComBotoes(final GridBagConstraints gbc) {
-        gbc.gridy = 3; // Quarta linha
-        gbc.gridx = 0;
+        gbc.gridy = GuiParameters.getLinhaQuatroTela(); // Quarta linha
+        gbc.gridx = GuiParameters.getColunaUmTela();
         painelPrincipal.add(btnAdicionar, gbc);
     }
 
     private void organizaTerceiraLinhaComCampos(final GridBagConstraints gbc) {
-        gbc.gridy = 2; // Teceira Linha
-        gbc.gridx = 0;
+        gbc.gridy = GuiParameters.getLinhaTresTela(); // Teceira Linha
+        gbc.gridx = GuiParameters.getColunaUmTela();
         painelPrincipal.add(new JLabel("Tipo:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = GuiParameters.getColunaDoisTela();
         painelPrincipal.add(cbTipoConta, gbc);
     }
 
     private void organizaSegundaLinhaComCampos(final GridBagConstraints gbc) {
-        gbc.gridy = 1; // Segunda linha
+        gbc.gridy = GuiParameters.getLinhaDoisTela(); // Segunda linha
 
         gbc.gridwidth = 1;
         painelPrincipal.add(new JLabel("Cpf/Cnpj:"), gbc);
 
-        gbc.gridx = 1;
+        gbc.gridx = GuiParameters.getColunaDoisTela();
         painelPrincipal.add(txtCpfCnpj, gbc);
 
     }
 
     private void organizaPrimeiraLinhaComTabela(final GridBagConstraints gbc) {
-        gbc.gridy = 0; // Linha zero - primeira linha
-        gbc.gridx = 0; // Coluna zero
+        gbc.gridy = GuiParameters.getLinhaUmTela(); // Linha zero - primeira linha
+        gbc.gridx = GuiParameters.getColunaUmTela(); // Coluna zero
         gbc.gridwidth = 3;
         painelPrincipal.add(scrollPane, gbc);
     }

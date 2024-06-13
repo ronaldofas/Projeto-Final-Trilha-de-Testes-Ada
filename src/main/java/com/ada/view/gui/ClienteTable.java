@@ -29,7 +29,7 @@ public class ClienteTable extends JFrame {
     public ClienteTable(final ClienteController cliente) {
         // Configurações da Janela
         setTitle("Clientes");
-        setSize(600, 400);
+        setSize(GuiParameters.getTabelaLargura(), GuiParameters.getTabelaAltura());
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.cliente = cliente;
         clientes = this.cliente.listarClientes();
@@ -70,47 +70,47 @@ public class ClienteTable extends JFrame {
     }
 
     private void organizaQuartaLinhaComBotoes(final GridBagConstraints gbc) {
-        gbc.gridy = 3; // Quarta linha
-        gbc.gridx = 0;
+        gbc.gridy = GuiParameters.getLinhaQuatroTela(); // Quarta linha
+        gbc.gridx = GuiParameters.getColunaUmTela();
         painelPrincipal.add(btnAdicionar, gbc);
     }
 
     private void organizaTerceiraLinhaComCampos(final GridBagConstraints gbc) {
-        gbc.gridy = 2; // Teceira Linha
-        gbc.gridx = 0;
+        gbc.gridy = GuiParameters.getLinhaTresTela(); // Teceira Linha
+        gbc.gridx = GuiParameters.getColunaUmTela();
         painelPrincipal.add(new JLabel("Tipo:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = GuiParameters.getColunaDoisTela();
         painelPrincipal.add(cbTipoCliente, gbc);
     }
 
     private void organizaSegundaLinhaComCampos(final GridBagConstraints gbc) {
-        gbc.gridy = 1; // Segunda linha
+        gbc.gridy = GuiParameters.getLinhaDoisTela(); // Segunda linha
 
         gbc.gridwidth = 1;
         painelPrincipal.add(new JLabel("Cpf/Cnpj:"), gbc);
 
-        gbc.gridx = 1;
+        gbc.gridx = GuiParameters.getColunaDoisTela();
         painelPrincipal.add(txtCpfCnpj, gbc);
 
         gbc.gridwidth = 1;
-        gbc.gridx = 2;
+        gbc.gridx = GuiParameters.getColunaTresTela();
         painelPrincipal.add(new JLabel("Nome:"), gbc);
 
-        gbc.gridx = 3;
+        gbc.gridx = GuiParameters.getColunaQuatroTela();
         painelPrincipal.add(txtNome, gbc);
     }
 
     private void organizaPrimeiraLinhaComTabela(final GridBagConstraints gbc) {
-        gbc.gridy = 0; // Linha zero - primeira linha
-        gbc.gridx = 0; // Coluna zero
+        gbc.gridy = GuiParameters.getLinhaUmTela(); // Linha zero - primeira linha
+        gbc.gridx = GuiParameters.getColunaUmTela(); // Coluna zero
         gbc.gridwidth = 3;
         painelPrincipal.add(scrollPane, gbc);
     }
 
     private void criarCampoDeEntrada() {
         // Criar os Campos de Entrada
-        txtNome = new JTextField(20);
-        txtCpfCnpj = new JTextField(14);
+        txtNome = new JTextField(GuiParameters.getTamanhoTxtNome());
+        txtCpfCnpj = new JTextField(GuiParameters.getTamanhoTxtCpfCnpj());
         cbTipoCliente = new JComboBox<>(Classificacao.values());
     }
 

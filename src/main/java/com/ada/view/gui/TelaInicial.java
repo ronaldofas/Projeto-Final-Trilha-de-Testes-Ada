@@ -16,7 +16,7 @@ public class TelaInicial extends JFrame {
     public TelaInicial(BancoController banco, ClienteController cliente) {
         // Configurações da Janela
         setTitle("Caixa Econômica Federal");
-        setSize(800, 600);
+        setSize(GuiParameters.getTelaLargura(), GuiParameters.getTelaAltura());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.banco = banco;
         this.cliente = cliente;
