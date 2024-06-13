@@ -2,7 +2,9 @@ package com.ada.model.entity.conta;
 
 import com.ada.model.entity.interfaces.conta.Identificador;
 
-public class NumeroConta implements Identificador<String> {
+import java.io.Serializable;
+
+public class NumeroConta implements Identificador<String>, Serializable {
     private static int numeroIncremental = 0;
     private final String numeroDaConta;
 

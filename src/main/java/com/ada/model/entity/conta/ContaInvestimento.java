@@ -4,11 +4,12 @@ import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.services.DateTimeHelpers;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContaInvestimento implements Conta {
+public class ContaInvestimento implements Conta, Serializable {
 
     private boolean status;
     private final Cliente cliente;

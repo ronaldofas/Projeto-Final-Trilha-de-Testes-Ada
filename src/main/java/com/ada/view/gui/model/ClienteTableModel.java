@@ -2,7 +2,6 @@ package com.ada.view.gui.model;
 
 import com.ada.model.entity.cliente.Cliente;
 import javax.swing.table.AbstractTableModel;
-import java.io.Serializable;
 import java.util.List;
 
 public class ClienteTableModel extends AbstractTableModel{

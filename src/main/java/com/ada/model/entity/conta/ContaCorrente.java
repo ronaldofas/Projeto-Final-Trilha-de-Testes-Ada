@@ -7,11 +7,12 @@ import com.ada.model.entity.interfaces.conta.Conta;
 import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.helpers.services.DateTimeHelpers;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContaCorrente implements ContaTarifavel {
+public class ContaCorrente implements ContaTarifavel, Serializable {
 
     private boolean status;
     private final Cliente cliente;
@@ -49,14 +50,12 @@ public class ContaCorrente implements ContaTarifavel {
     public void sacar(final double valor) {
         validarValorTransacao(valor, true);
         saldo -= valor;
-        System.out.printf("Saque no valor de R$ %.2f efetuado%n", valor);
     }
 
     @Override
     public void depositar(final double valor) {
         validarValorTransacao(valor, false);
         saldo += valor;
-        System.out.printf("Depósito no valor de R$ %.2f efetuado%n", valor);
     }
 
     public LocalDateTime getDataAtualizacao() {
@@ -68,9 +67,6 @@ public class ContaCorrente implements ContaTarifavel {
         validarValorTransacao(valor, true);
         saldo -= valor;
         conta.depositar(valor);
-        System.out.printf(
-                "Valor de R$ %.2f transferido da conta %S para a contas %S%n", valor,
-                getNumero(), conta.getNumero());
     }
 
     @Override

@@ -9,11 +9,12 @@ import com.ada.model.helpers.enums.Classificacao;
 import com.ada.model.helpers.services.ArredondamentoDouble;
 import com.ada.model.helpers.services.DateTimeHelpers;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContaPoupanca implements ContaRentavel {
+public class ContaPoupanca implements ContaRentavel, Serializable {
 
     private final List<Transacao> transacoes;
     private final LocalDateTime dataAtualizacao;
@@ -61,14 +62,12 @@ public class ContaPoupanca implements ContaRentavel {
         validarValorTransacao(valor, false);
         adicionarRendimento(valor);
         saldo += valor;
-        System.out.printf("Depósito no valor de R$ %.2f efetuado.%n", valor);
     }
 
     @Override
     public void sacar(final double valor) {
         validarValorTransacao(valor, true);
         saldo -= valor;
-        System.out.printf("Saque no valor de R$ %.2f efetuado%n", valor);
     }
 
     @Override
@@ -76,8 +75,6 @@ public class ContaPoupanca implements ContaRentavel {
         validarValorTransacao(valor, false);
         contaDestino.depositar(valor);
         saldo -= valor;
-        System.out.printf("Transferência no valor de R$ %.2f da conta %S para a conta %S efetuada%n", valor,
-                getNumero(), contaDestino.getNumero());
     }
 
     @Override
@@ -113,7 +110,6 @@ public class ContaPoupanca implements ContaRentavel {
     private void adicionarRendimento(double valorDoSaque) {
         double rendimento = ArredondamentoDouble.arredondar((valorDoSaque * TAXARENDIMENTO));
         this.saldo += rendimento;
-        System.out.printf("Você recebeu o rendimento de R$ %.2f%n", rendimento);
     }
 
     @Override

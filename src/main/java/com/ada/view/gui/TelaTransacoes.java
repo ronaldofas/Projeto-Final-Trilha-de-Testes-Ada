@@ -228,13 +228,13 @@ public class TelaTransacoes extends JFrame {
                 String valorAhTransferirCapturado = valorInvestirTextField.getText();
                 double valorTransacao = Double.parseDouble(valorAhTransferirCapturado);
                 Conta contaOrigem = banco.buscarConta(obterIdFormatado());
-                if (!(contaOrigem instanceof ContaCorrente)) {
+                if (!(contaOrigem instanceof ContaCorrente conta)) {
                     JOptionPane.showMessageDialog(
                             null,
                             "Investimentos só podem ser efetuados a partir de uma conta corrente!");
 
                 } else {
-                    banco.investir((ContaCorrente) contaOrigem, valorTransacao);
+                    banco.investir(conta, valorTransacao);
                 }
 
                 JOptionPane.showMessageDialog(

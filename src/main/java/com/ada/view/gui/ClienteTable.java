@@ -26,7 +26,7 @@ public class ClienteTable extends JFrame {
     private final ClienteController cliente;
     private ClienteTableModel clienteTableModel;
 
-    public ClienteTable(ClienteController cliente) {
+    public ClienteTable(final ClienteController cliente) {
         // Configurações da Janela
         setTitle("Clientes");
         setSize(600, 400);
@@ -69,13 +69,13 @@ public class ClienteTable extends JFrame {
 
     }
 
-    private void organizaQuartaLinhaComBotoes(GridBagConstraints gbc) {
+    private void organizaQuartaLinhaComBotoes(final GridBagConstraints gbc) {
         gbc.gridy = 3; // Quarta linha
         gbc.gridx = 0;
         painelPrincipal.add(btnAdicionar, gbc);
     }
 
-    private void organizaTerceiraLinhaComCampos(GridBagConstraints gbc) {
+    private void organizaTerceiraLinhaComCampos(final GridBagConstraints gbc) {
         gbc.gridy = 2; // Teceira Linha
         gbc.gridx = 0;
         painelPrincipal.add(new JLabel("Tipo:"), gbc);
@@ -83,7 +83,7 @@ public class ClienteTable extends JFrame {
         painelPrincipal.add(cbTipoCliente, gbc);
     }
 
-    private void organizaSegundaLinhaComCampos(GridBagConstraints gbc) {
+    private void organizaSegundaLinhaComCampos(final GridBagConstraints gbc) {
         gbc.gridy = 1; // Segunda linha
 
         gbc.gridwidth = 1;
@@ -100,7 +100,7 @@ public class ClienteTable extends JFrame {
         painelPrincipal.add(txtNome, gbc);
     }
 
-    private void organizaPrimeiraLinhaComTabela(GridBagConstraints gbc) {
+    private void organizaPrimeiraLinhaComTabela(final GridBagConstraints gbc) {
         gbc.gridy = 0; // Linha zero - primeira linha
         gbc.gridx = 0; // Coluna zero
         gbc.gridwidth = 3;
@@ -153,7 +153,7 @@ public class ClienteTable extends JFrame {
         });
     }
 
-    private static Identificador<String> getIdentificador(Classificacao tipoCliente, String id) {
+    private static Identificador<String> getIdentificador(final Classificacao tipoCliente, final String id) {
         if (tipoCliente == Classificacao.PF)
             return new IdentificadorCPF(id);
         if (tipoCliente == Classificacao.PJ)

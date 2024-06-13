@@ -11,7 +11,7 @@ public class TransacaoModel extends AbstractTableModel {
 
     private List<Transacao> transacoes;
 
-    public TransacaoModel(List<Transacao> transacoes) {
+    public TransacaoModel(final List<Transacao> transacoes) {
         this.transacoes = transacoes;
     }
 
@@ -26,7 +26,7 @@ public class TransacaoModel extends AbstractTableModel {
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
         Transacao transacao = transacoes.get(rowIndex);
 
         DateTimeFormatter novo = DateTimeFormatter
@@ -44,7 +44,7 @@ public class TransacaoModel extends AbstractTableModel {
     }
 
     @Override
-    public String getColumnName(int column) {
+    public String getColumnName(final int column) {
         return switch (column) {
             case 0 -> "Data";
             case 1 -> "Transação";
@@ -55,7 +55,7 @@ public class TransacaoModel extends AbstractTableModel {
         };
     }
 
-    public void atualizarTransacoes(List<Transacao> transacoes){
+    public void atualizarTransacoes(final List<Transacao> transacoes){
         this.transacoes = transacoes;
     }
 }

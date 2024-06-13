@@ -3,11 +3,12 @@ package com.ada.model.entity.conta;
 import com.ada.model.entity.cliente.Cliente;
 import com.ada.model.helpers.enums.TipoTransacao;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 
-public class Transacao {
+public class Transacao implements Serializable {
     private final TipoTransacao tipoTransacao;
     private final double valor;
     private final LocalDateTime dataTransacao;
