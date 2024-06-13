@@ -1,6 +1,8 @@
 package com.ada.model.entity.interfaces.conta;
 
-public interface Identificador<T> {
+import java.io.Serializable;
+
+public interface Identificador<T> extends Serializable {
     T getValor();
     void validar();
 }

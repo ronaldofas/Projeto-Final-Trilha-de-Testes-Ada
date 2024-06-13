@@ -2,7 +2,9 @@ package com.ada.model.entity.cliente;
 
 import com.ada.model.entity.interfaces.conta.Identificador;
 
-public class IdentificadorCNPJ implements Identificador<String> {
+import java.io.Serializable;
+
+public class IdentificadorCNPJ implements Identificador<String>, Serializable {
     private final String idCNPJ;
 
     public IdentificadorCNPJ(final String idCNPJ) {

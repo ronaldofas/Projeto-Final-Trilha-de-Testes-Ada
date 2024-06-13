@@ -2,9 +2,10 @@ package com.ada.view.gui.model;
 
 import com.ada.model.entity.cliente.Cliente;
 import javax.swing.table.AbstractTableModel;
+import java.io.Serializable;
 import java.util.List;
 
-public class ClienteTableModel extends AbstractTableModel {
+public class ClienteTableModel extends AbstractTableModel{
 
     private List<Cliente> clientes;
 
@@ -23,7 +24,7 @@ public class ClienteTableModel extends AbstractTableModel {
     }
 
     @Override
-    public String getColumnName(int column) {
+    public String getColumnName(final int column) {
         return switch (column) {
             case 0 -> "Id";
             case 1 -> "Tipo";
@@ -35,7 +36,7 @@ public class ClienteTableModel extends AbstractTableModel {
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
         Cliente cliente = clientes.get(rowIndex);
 
         return switch (columnIndex) {
@@ -48,7 +49,7 @@ public class ClienteTableModel extends AbstractTableModel {
         };
     }
 
-    public void atualizarClientes(List<Cliente> clientes){
+    public void atualizarClientes(final List<Cliente> clientes){
         this.clientes = clientes;
     }
 }

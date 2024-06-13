@@ -16,7 +16,7 @@ public class Main {
         // Crie as funcionalidades: sacar, depositar, consultar saldo.
 
         // Cria o Menu
-        boolean gui = false;
+        boolean gui = true;
         final ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
         final ContaRepositorio contaRepositorio = new ContaRepositorio();
         final BancoController banco = new BancoController(contaRepositorio);

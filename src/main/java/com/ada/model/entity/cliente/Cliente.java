@@ -3,9 +3,10 @@ package com.ada.model.entity.cliente;
 import com.ada.model.entity.interfaces.conta.Identificador;
 import com.ada.model.helpers.enums.Classificacao;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Cliente {
+public class Cliente implements Serializable {
     private final Identificador<String> id;
     private final Classificacao classificacao;
     private String nome;

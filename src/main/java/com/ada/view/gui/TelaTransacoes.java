@@ -4,7 +4,6 @@ import com.ada.controller.BancoController;
 import com.ada.model.entity.conta.ContaCorrente;
 import com.ada.model.entity.conta.Transacao;
 import com.ada.model.entity.interfaces.conta.Conta;
-import com.ada.model.helpers.enums.TipoDeContaEnum;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,8 +44,6 @@ public class TelaTransacoes extends JFrame {
 
         configuraLinhaUmDaJanela();
 
-        configuraLinhaDoisDaJanela();
-
         criarPainelDeAbas();
 
         criarAbas();
@@ -85,7 +82,7 @@ public class TelaTransacoes extends JFrame {
             } else {
                 // Efetuar saque
                 saldo = conta.consultarSaldo();
-                var textoSaldo = String.format("O saldo atual da conta é de R$ %.2f", (Object)saldo);
+                var textoSaldo = String.format("O saldo atual da conta é de R$ %.2f", saldo);
                 JOptionPane.showMessageDialog(null,textoSaldo);
             }
         });
@@ -108,7 +105,7 @@ public class TelaTransacoes extends JFrame {
                 else {
                     // Efetuar saque
                     try {
-                        conta.depositar(Double.parseDouble(valorDeposito));
+                        banco.depositar(conta, Double.parseDouble(valorDeposito));
                         JOptionPane.showMessageDialog(null, "Depósito efetuado com sucesso");
                     } catch (Exception ex){
                         JOptionPane
@@ -121,7 +118,14 @@ public class TelaTransacoes extends JFrame {
     }
 
     private String obterIdFormatado() {
-        return String.format(numeroContaTextField.getText());
+        final String texto = numeroContaTextField.getText();
+        final int numeroConta = Integer.parseInt(texto);
+        return String.format("%06d", numeroConta);
+    }
+
+    private String converterTextoContaParaId(final String numeroDigitado) {
+        final int numeroConta = Integer.parseInt(numeroDigitado);
+        return String.format("%06d", numeroConta);
     }
 
     private void adicionarFuncionalidadeAoBotaoSacar() {
@@ -140,7 +144,7 @@ public class TelaTransacoes extends JFrame {
                 else {
                     // Efetuar saque
                     try {
-                        conta.sacar(Double.parseDouble(valorSaque));
+                        banco.sacar(conta, Double.parseDouble(valorSaque));
                         JOptionPane.showMessageDialog(null, "Saque efetuado com suceso.");
                     } catch (Exception ex){
                         JOptionPane
@@ -165,25 +169,26 @@ public class TelaTransacoes extends JFrame {
         JButton extratoButton = new JButton("Gerar extrato");
         aba6.add(extratoButton, gbc);
 
-        extratoButton.addActionListener(e -> {
-            Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
-            transacoes = contaOrigem.getTransacoes();
-            StringBuilder extratoPronto = new StringBuilder();
-            extratoPronto.append(" Extrato da Conta n° ");
-            extratoPronto.append(contaOrigem.getNumero());
-            extratoPronto.append("\n Cliente: ");
-            extratoPronto.append(contaOrigem.getCliente().getNome());
+        extratoButton.addActionListener(e -> montarEhExibirExtrato());
+    }
+
+    private void montarEhExibirExtrato() {
+        Conta conta = banco.buscarConta(obterIdFormatado());
+        transacoes = conta.getTransacoes();
+        StringBuilder extratoPronto = new StringBuilder();
+        extratoPronto.append(" Extrato da Conta n° ");
+        extratoPronto.append(conta.getNumero());
+        extratoPronto.append("\n Cliente: ");
+        extratoPronto.append(conta.getCliente().getNome());
+        extratoPronto.append("\n\n Data - Tipo transação  - Destinatario - Valor - Observação");
+        for (Transacao transacao : transacoes){
             extratoPronto.append("\n");
-            extratoPronto.append("\n Data - Tipo transação  - Destinatario - Valor - Observação");
-            for (Transacao transacao : transacoes){
-                extratoPronto.append("\n");
-                extratoPronto.append(transacao.toString());
-            }
-            extratoPronto.append("\n\nSaldo: ");
-            extratoPronto.append(contaOrigem.consultarSaldo());
-            textoLongo.setText("");
-            textoLongo.setText(extratoPronto.toString());
-        });
+            extratoPronto.append(transacao.toString());
+        }
+        extratoPronto.append("\n\nSaldo: ");
+        extratoPronto.append(conta.consultarSaldo());
+        textoLongo.setText("");
+        textoLongo.setText(extratoPronto.toString());
     }
 
     private void criarTextoEscrolavel(){
@@ -222,11 +227,15 @@ public class TelaTransacoes extends JFrame {
             investirButton.addActionListener(e -> {
                 String valorAhTransferirCapturado = valorInvestirTextField.getText();
                 double valorTransacao = Double.parseDouble(valorAhTransferirCapturado);
-                Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
-                if (!(contaOrigem instanceof ContaCorrente))
-                    throw new IllegalArgumentException(
-                            "Investimentos só podem ser efetuados a partir de uma conta corrente");
-                this.banco.investir((ContaCorrente) contaOrigem, valorTransacao);
+                Conta contaOrigem = banco.buscarConta(obterIdFormatado());
+                if (!(contaOrigem instanceof ContaCorrente)) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Investimentos só podem ser efetuados a partir de uma conta corrente!");
+
+                } else {
+                    banco.investir((ContaCorrente) contaOrigem, valorTransacao);
+                }
 
                 JOptionPane.showMessageDialog(
                         null,
@@ -278,9 +287,11 @@ public class TelaTransacoes extends JFrame {
         transferirButton.addActionListener(e -> {
             String valorAhTransferirCapturado = valorAhTransferirTextField.getText();
             double valorTransacao = Double.parseDouble(valorAhTransferirCapturado);
-            Conta contaOrigem = banco.buscarConta(numeroContaTextField.getText().toUpperCase());
-            Conta contaDestino = banco.buscarConta(contaDestinoTextField.getText().toUpperCase());
-            this.banco.transferir(contaOrigem, contaDestino, valorTransacao);
+            Conta contaOrigem = banco.buscarConta(obterIdFormatado());
+            Conta contaDestino = banco.buscarConta(
+                    converterTextoContaParaId(contaDestinoTextField.getText().toUpperCase())
+            );
+            banco.transferir(contaOrigem, contaDestino, valorTransacao);
 
             JOptionPane.showMessageDialog(null,"Transferência efetuada com sucesso!");
         });
@@ -394,7 +405,7 @@ public class TelaTransacoes extends JFrame {
         painelPrincipal.add(painelComAbas, gbc);
     }
 
-    private void configuraLinhaDoisDaJanela() {
+    private void configuraLinhaUmDaJanela() {
         // Rótulo "Número da conta"
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
@@ -408,23 +419,6 @@ public class TelaTransacoes extends JFrame {
         gbc.gridy = 1;
         numeroContaTextField = new JTextField(10);
         painelPrincipal.add(numeroContaTextField, gbc);
-    }
-
-    private void configuraLinhaUmDaJanela() {
-        JComboBox<TipoDeContaEnum> tipoContaComboBox;
-        // Rótulo "Tipo da conta"
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 1; // coluna2
-        gbc.gridy = 0; // linha 1
-        gbc.insets = new Insets(10, 10, 10, 10);
-        JLabel tipoContaLabel = new JLabel("Tipo da conta:");
-        painelPrincipal.add(tipoContaLabel, gbc);
-
-        // ComboBox "Tipo da conta"
-        gbc.gridx = 2; // coluna2
-        gbc.gridy = 0; // linha 1
-        tipoContaComboBox = new JComboBox<>(TipoDeContaEnum.values());
-        painelPrincipal.add(tipoContaComboBox, gbc);
     }
 
     private void criarPainelPrincipal() {
