@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClienteTest {
+class ClienteTest {
 
     @Test
     void testAlterarNomePessoaFisica() {
@@ -52,15 +52,21 @@ public class ClienteTest {
     }
 
     @Test
-    void testValidar() {
+    void testValidarErroNoIdentificador() {
         // Teste de validação com ID nulo
         assertThrows(IllegalArgumentException.class, () ->
                 new Cliente(new IdentificadorCPF(null), Classificacao.PF, "João"));
+    }
 
+    @Test
+    void testValidarErroNoClassificador() {
         // Teste de validação com Tipo nulo
         assertThrows(IllegalArgumentException.class, () ->
                 new Cliente(new IdentificadorCPF("12345678901"), null, "João"));
+    }
 
+    @Test
+    void testValidarErroNoNome() {
         // Teste de validação com Nome vazio
         assertThrows(IllegalArgumentException.class, () ->
                 new Cliente(new IdentificadorCPF("12345678901"), Classificacao.PF, ""));
