@@ -28,7 +28,7 @@ class BancoControllerTest {
     }
 
     @Test
-    public void testAbrirContaPoupancaPessoaFisica() {
+    void testAbrirContaPoupancaPessoaFisica() {
         // Arrange
         IdentificadorCPF identificadorCPF = new IdentificadorCPF("12345678901");
         Cliente cliente = new Cliente(identificadorCPF, Classificacao.PF, "João da Silva");
